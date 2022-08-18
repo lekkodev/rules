@@ -22,7 +22,7 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 	defer func() {
 		info := recover()
 		if info != nil {
-			retErr = fmt.Errorf("%q\nstack:\n %v", info, debug.Stack())
+			retErr = fmt.Errorf("%q\nstack:\n %v", info, string(debug.Stack()))
 		}
 	}()
 	input := antlr.NewInputStream(rule)
@@ -56,7 +56,7 @@ func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr erro
 	defer func() {
 		info := recover()
 		if info != nil {
-			retErr = fmt.Errorf("%q\nstack:\n %v", info, debug.Stack())
+			retErr = fmt.Errorf("%q\nstack:\n %v", info, string(debug.Stack()))
 			ret = false
 		}
 	}()
