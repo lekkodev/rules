@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
@@ -21,7 +22,7 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 	defer func() {
 		info := recover()
 		if info != nil {
-			retErr = fmt.Errorf("%q", info)
+			retErr = fmt.Errorf("%q\nstack:\n %v", info, debug.Stack())
 		}
 	}()
 	input := antlr.NewInputStream(rule)
@@ -55,7 +56,7 @@ func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr erro
 	defer func() {
 		info := recover()
 		if info != nil {
-			retErr = fmt.Errorf("%q", info)
+			retErr = fmt.Errorf("%q\nstack:\n %v", info, debug.Stack())
 			ret = false
 		}
 	}()
