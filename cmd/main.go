@@ -38,7 +38,4 @@ func main() {
 		Answer: %v
 	`, rulesString, info, ans),
 	)
-	if err := ev.LastDebugErr(); err != nil {
-		fmt.Println("Last debug error", ev.LastDebugErr())
-	}
 }

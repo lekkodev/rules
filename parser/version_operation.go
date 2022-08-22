@@ -10,6 +10,11 @@ type VersionOperation struct {
 
 func (v *VersionOperation) get(left Operand, right Operand) (semver.Version, semver.Version, error) {
 	var leftVer, rightVer semver.Version
+	if left == nil {
+		// For now, just initialize with the zero version
+		left = leftVer.String()
+	}
+
 	leftVal, ok := left.(string)
 	if !ok {
 		return leftVer, rightVer, newErrInvalidOperand(left, leftVal)

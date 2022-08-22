@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNestedObject(t *testing.T) {
@@ -102,11 +102,11 @@ func TestNestedObject(t *testing.T) {
 	for _, tt := range tests {
 		result, err := eval(t, tt.rule, tt.input)
 		if tt.hasError {
-			assert.Error(t, err)
+			require.Error(t, err)
 			continue
 		}
-		assert.NoError(t, err)
-		assert.Equal(t, tt.result, result)
+		require.NoError(t, err, fmt.Sprintf("unexpected error rule: %s input: %v", tt.rule, tt.input))
+		require.Equal(t, tt.result, result, fmt.Sprintf("invalid value rule: %s input: %v", tt.rule, tt.input))
 	}
 }
 
@@ -190,7 +190,7 @@ func TestLogicalExpWithAnd(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule, fmt.Sprintf("invalid result rule: %s input: %v", tt.rule, tt.input))
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 }
