@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testCase struct {
@@ -19,7 +19,7 @@ type obj map[string]interface{}
 
 func eval(t *testing.T, rule string, input obj) (bool, error) {
 	ev, err := NewEvaluator(rule)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	return ev.Process(input)
 }
 
@@ -32,8 +32,8 @@ func TestInvalidRule(t *testing.T) {
 
 	for _, rule := range invalidRules {
 		result, err := eval(t, rule, obj{"x": 1})
-		assert.Error(t, err, rule)
-		assert.False(t, result)
+		require.Error(t, err, rule)
+		require.False(t, result)
 
 	}
 }
@@ -54,7 +54,7 @@ func TestVersions(t *testing.T) {
 				"x": 2,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x EQ 1.0.0`,
@@ -81,18 +81,10 @@ func TestVersions(t *testing.T) {
 		{
 			`x NE 1.0.0`,
 			obj{
-				"x": "1.0.0.",
-			},
-			false,
-			false,
-		},
-		{
-			`x NE 1.0.0`,
-			obj{
 				"x": 2.3,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x NE 1.0.0`,
@@ -124,7 +116,7 @@ func TestVersions(t *testing.T) {
 				"x": 1,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x LE 1.1.0`,
@@ -156,7 +148,7 @@ func TestVersions(t *testing.T) {
 				"x": 2,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x GT 1.1.0`,
@@ -180,7 +172,7 @@ func TestVersions(t *testing.T) {
 				"x": 1,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x GE 1.1.0`,
@@ -212,7 +204,7 @@ func TestVersions(t *testing.T) {
 				"x": 1,
 			},
 			false,
-			false,
+			true,
 		},
 		{
 			`x CO 1.1.0`,
@@ -251,14 +243,14 @@ func TestVersions(t *testing.T) {
 	for _, tt := range tests {
 		result, err := eval(t, tt.rule, tt.input)
 		if tt.hasError {
-			assert.Error(t, err)
+			require.Error(t, err, fmt.Sprintf("expected error didn't get one rule: %s input: %v", tt.rule, tt.input))
 			continue
 		} else {
-			assert.NoError(t, err)
-			assert.Equal(t, result, tt.result, fmt.Sprintf("rule :%s, input :%v", tt.rule, tt.input))
+			require.NoError(t, err, fmt.Sprintf("unexpected error for rule: %s input: %v", tt.rule, tt.input))
+			require.Equal(t, result, tt.result, fmt.Sprintf("rule: %s, input :%v", tt.rule, tt.input))
 		}
-		assert.Equal(t, false, Evaluate(tt.rule, obj{"x": 4.5}), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, false, Evaluate(tt.rule, obj{"x": 4.5}), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 }
 
@@ -310,8 +302,8 @@ func TestListOfStrings(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 
 }
@@ -364,9 +356,11 @@ func TestListOfDoubles(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, false, Evaluate(tt.rule, obj{"x": "abc"}), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		res, err := eval(t, tt.rule, tt.input)
+		require.NoError(t, err)
+		require.Equal(t, tt.result, res, tt.rule)
+		require.Equal(t, false, Evaluate(tt.rule, obj{"x": "abc"}), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 
 }
@@ -419,9 +413,11 @@ func TestListOfInts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, false, Evaluate(tt.rule, obj{"x": "123"}), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		res, err := eval(t, tt.rule, tt.input)
+		require.NoError(t, err)
+		require.Equal(t, tt.result, res, tt.rule)
+		require.Equal(t, false, Evaluate(tt.rule, obj{"x": "123"}), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 
 }
@@ -461,8 +457,8 @@ func TestPresent(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 
 }
@@ -510,8 +506,8 @@ func TestNull(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 }
 
@@ -530,7 +526,7 @@ func TestNullInvalids(t *testing.T) {
 		_, err := eval(t, rule, obj{
 			"x": nil,
 		})
-		assert.Error(t, err)
+		require.Error(t, err)
 	}
 }
 
@@ -587,8 +583,8 @@ func TestBool(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input))
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input))
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 }
 
@@ -609,8 +605,8 @@ func TestBoolInvalids(t *testing.T) {
 		result, err := eval(t, rule, obj{
 			"x": true,
 		})
-		assert.Error(t, err)
-		assert.False(t, result)
+		require.Error(t, err)
+		require.False(t, result)
 	}
 }
 
@@ -625,8 +621,8 @@ func TestIntInvalids(t *testing.T) {
 		result, err := eval(t, rule, obj{
 			"x": 2,
 		})
-		assert.Error(t, err)
-		assert.False(t, result)
+		require.Error(t, err)
+		require.False(t, result)
 	}
 }
 
@@ -907,8 +903,8 @@ func TestInt(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), fmt.Sprintf("invalid result rule: %s, input: %v", tt.rule, tt.input))
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
 	}
 }
 
@@ -1037,16 +1033,16 @@ func TestFloat(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
-		assert.Equal(t, false, Evaluate(tt.rule, obj{"x": "2.4"}), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, false, Evaluate(tt.rule, obj{"x": "2.4"}), tt.rule)
 	}
 }
 
 func TestString(t *testing.T) {
 	tests := []testCase{
 		{
-			`x eq ""`,
+			`x pr and x eq ""`,
 			obj{},
 			false,
 			false,
@@ -1238,8 +1234,8 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		assert.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule)
-		assert.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
-		assert.Equal(t, false, Evaluate(tt.rule, obj{"x": 3}), tt.rule)
+		require.Equal(t, tt.result, Evaluate(tt.rule, tt.input), tt.rule, fmt.Sprintf("error evaluating rule: %s with context %v", tt.rule, tt.input))
+		require.Equal(t, tt.result, Evaluate(fmt.Sprintf("(%s)", tt.rule), tt.input), tt.rule)
+		require.Equal(t, false, Evaluate(tt.rule, obj{"x": 3}), tt.rule)
 	}
 }

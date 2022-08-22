@@ -45,8 +45,7 @@ type JsonQueryVisitorImpl struct {
 	leftOp           Operand
 	rightOp          Operand
 
-	err      error
-	debugErr error
+	err error
 }
 
 func NewJsonQueryVisitorImpl(item map[string]interface{}) *JsonQueryVisitorImpl {
@@ -54,10 +53,6 @@ func NewJsonQueryVisitorImpl(item map[string]interface{}) *JsonQueryVisitorImpl 
 		stack: &objStack{},
 		item:  item,
 	}
-}
-
-func (j *JsonQueryVisitorImpl) setDebugErr(err error) {
-	j.debugErr = err
 }
 
 func (j *JsonQueryVisitorImpl) setErr(err error) {
@@ -158,8 +153,7 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 			// be conservative and return false because the rule doesn't even make
 			// sense. It can be argued that it would be false positive if we were
 			// to return true
-			j.setErr(err)
-			j.setDebugErr(
+			j.setErr(
 				newNestedError(err, "Not a valid operation for datatypes").Set(ErrVals{
 					"operation":           ctx.op.GetTokenType(),
 					"object_path_operand": j.leftOp,
@@ -167,7 +161,7 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 				}),
 			)
 		case ErrEvalOperandMissing:
-			j.setDebugErr(
+			j.setErr(
 				newNestedError(err, "Eval operand missing in input object").Set(ErrVals{
 					"attr_path": ctx.AttrPath().GetText(),
 				}),
@@ -175,7 +169,7 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 		default:
 			switch err.(type) {
 			case *ErrInvalidOperand:
-				j.setDebugErr(
+				j.setErr(
 					newNestedError(err, "operands are not the right value type").Set(ErrVals{
 						"attr_path":           ctx.AttrPath().GetText(),
 						"object_path_operand": j.leftOp,
@@ -183,7 +177,7 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 					}),
 				)
 			default:
-				j.setDebugErr(
+				j.setErr(
 					newNestedError(err, "unknown error").Set(ErrVals{
 						"attr_path":           ctx.AttrPath().GetText(),
 						"object_path_operand": j.leftOp,
@@ -193,7 +187,6 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 
 			}
 		}
-
 		return false
 	}
 	return ret

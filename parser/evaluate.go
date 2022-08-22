@@ -8,8 +8,6 @@ import (
 )
 
 type Evaluator struct {
-	lastDebugErr error
-
 	rule string
 	tree antlr.ParseTree
 
@@ -40,17 +38,7 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 	}, nil
 }
 
-func (e *Evaluator) Reset() error {
-	e.lastDebugErr = nil
-	return nil
-}
-
-func (e *Evaluator) LastDebugErr() error {
-	return e.lastDebugErr
-}
-
 func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr error) {
-	e.lastDebugErr = nil
 	// antlr lib has panics for exceptions so we have to put a recover here
 	// in the unlikely case there is an exception
 	defer func() {
@@ -63,7 +51,6 @@ func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr erro
 
 	visitor := NewJsonQueryVisitorImpl(items)
 	result := visitor.Visit(e.tree)
-	e.lastDebugErr = visitor.debugErr
 	if e.testHookPanic != nil {
 		defer e.testHookPanic()
 	}

@@ -91,7 +91,6 @@ func BenchmarkLogicalExpressionBigTreeCached(b *testing.B) {
 	ev, _ := NewEvaluator(rule)
 	for i := 0; i < b.N; i++ {
 		ev.Process(input)
-		ev.Reset()
 	}
 
 }

@@ -6,6 +6,62 @@ import (
 	"reflect"
 )
 
+func apply[L Operand, R Operand](left Operand, right Operand, applyFunc func(L, R) bool) (bool, error) {
+	if left == nil {
+		// We may get here if the context value isn't specified. To handle this case,
+		// we are going to set the left value to a zero value. This will result
+		// in behavior as if the left value was a zero value.
+		// THIS IS DANGEROUS FOR PRIMITIVES. We will try to handle primitives manually.
+		var l L
+		// This is a safe cast since we declared L to be an Operand.
+		left = Operand(l)
+	}
+	l, r, err := get[L, R](left, right)
+	if err != nil {
+		return false, err
+	}
+	return applyFunc(l, r), nil
+}
+
+func applyWithTransform[L Operand, R Operand](left Operand, right Operand, leftTransform func(left Operand) (L, error), rightTransform func(right Operand) (R, error), applyFunc func(L, R) bool) (bool, error) {
+	if left == nil {
+		// We may get here if the context value isn't specified. To handle this case,
+		// we are going to set the left value to a zero value. This will result
+		// in behavior as if the left value was a zero value.
+		// THIS IS DANGEROUS FOR PRIMITIVES. We will try to handle primitives manually.
+		var l L
+		// This is a safe cast since we declared L to be an Operand.
+		left = Operand(l)
+	}
+	l, err := leftTransform(left)
+	if err != nil {
+		return false, err
+	}
+
+	r, err := rightTransform(right)
+	if err != nil {
+		return false, err
+	}
+
+	return applyFunc(l, r), nil
+}
+
+func get[L Operand, R Operand](left Operand, right Operand) (L, R, error) {
+	// we need to instantiate these default values to get valid return values
+	var leftVal L
+	var rightVal R
+	var ok bool
+	leftVal, ok = left.(L)
+	if !ok {
+		return leftVal, rightVal, newErrInvalidOperand(left, leftVal)
+	}
+	rightVal, ok = right.(R)
+	if !ok {
+		return leftVal, rightVal, newErrInvalidOperand(right, rightVal)
+	}
+	return leftVal, rightVal, nil
+}
+
 func toFloat(op Operand) (float64, error) {
 	switch val := op.(type) {
 	case int:
