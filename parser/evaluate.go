@@ -53,10 +53,9 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 		return nil, err
 	}
 	p := NewJsonQueryParser(tokens)
-	p.RemoveErrorListeners()
 	// Remove default log listener and add our own.
+	p.RemoveErrorListeners()
 	p.AddErrorListener(errListener)
-	// TODO: maybe log properly
 	tree := p.Query()
 	if err := errListener.Error(); err != nil {
 		return nil, err
