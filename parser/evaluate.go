@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/pkg/errors"
 )
 
 type Evaluator struct {
@@ -12,6 +13,24 @@ type Evaluator struct {
 	tree antlr.ParseTree
 
 	testHookPanic func()
+}
+
+type errorListener struct {
+	antlr.DefaultErrorListener
+	err error
+}
+
+func (e *errorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, err antlr.RecognitionException) {
+	newErr := fmt.Errorf("syntax error when parsing symbol: %v at %d:%d: %s %v", offendingSymbol, line, column, msg, err)
+	if e.err != nil {
+		e.err = errors.Wrap(newErr, e.err.Error())
+	} else {
+		e.err = newErr
+	}
+}
+
+func (e *errorListener) Error() error {
+	return e.err
 }
 
 func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
@@ -24,14 +43,23 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 		}
 	}()
 	input := antlr.NewInputStream(rule)
+	errListener := new(errorListener)
 	lex := NewJsonQueryLexer(input)
+	// Remove default log listener and add our own.
 	lex.RemoveErrorListeners()
+	lex.AddErrorListener(errListener)
 	tokens := antlr.NewCommonTokenStream(lex, antlr.TokenDefaultChannel)
+	if err := errListener.Error(); err != nil {
+		return nil, err
+	}
 	p := NewJsonQueryParser(tokens)
-	// TODO: maybe log properly
+	// Remove default log listener and add our own.
 	p.RemoveErrorListeners()
+	p.AddErrorListener(errListener)
 	tree := p.Query()
-
+	if err := errListener.Error(); err != nil {
+		return nil, err
+	}
 	return &Evaluator{
 		rule: rule,
 		tree: tree,

@@ -111,9 +111,10 @@ func (j *JsonQueryVisitorImpl) VisitPresentExp(ctx *PresentExpContext) interface
 	return j.leftOp != nil
 }
 
-func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface{} {
+func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 	ctx.AttrPath().Accept(j)
 	ctx.Value().Accept(j)
+
 	if j.hasErr() {
 		return false
 	}
@@ -144,6 +145,7 @@ func (j *JsonQueryVisitorImpl) VisitCompareExp(ctx *CompareExpContext) interface
 		j.setErr(fmt.Errorf("Unknown operation %s", ctx.op.GetText()))
 		return false
 	}
+
 	defer func() { j.rightOp = nil }()
 	ret, err := apply(j.leftOp, j.rightOp)
 	if err != nil {
