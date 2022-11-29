@@ -1,3 +1,17 @@
+// Copyright 2022 Lekko Technologies, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package parser
 
 import (
@@ -35,7 +49,9 @@ func BenchmarkLogicalExpression(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ev, _ := NewEvaluator(rule)
-		ev.Process(input)
+		if _, err := ev.Process(input); err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -62,7 +78,9 @@ func BenchmarkLogicalExpressionBig(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ev, _ := NewEvaluator(rule)
-		ev.Process(input)
+		if _, err := ev.Process(input); err != nil {
+			b.Error(err)
+		}
 	}
 
 }
@@ -90,7 +108,9 @@ func BenchmarkLogicalExpressionBigTreeCached(b *testing.B) {
 	b.ResetTimer()
 	ev, _ := NewEvaluator(rule)
 	for i := 0; i < b.N; i++ {
-		ev.Process(input)
+		if _, err := ev.Process(input); err != nil {
+			b.Error(err)
+		}
 	}
 
 }
@@ -116,6 +136,8 @@ func BenchmarkLogicalExpressionNested(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ev, _ := NewEvaluator(rule)
-		ev.Process(input)
+		if _, err := ev.Process(input); err != nil {
+			b.Error(err)
+		}
 	}
 }
