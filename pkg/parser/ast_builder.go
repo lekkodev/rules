@@ -49,7 +49,6 @@ func BuildAST(rule string) (*rulesv1beta2.Rule, error) {
 }
 
 func (a *ASTBuilder) Visit(tree antlr.ParseTree) interface{} {
-	fmt.Println("visiting")
 	switch val := tree.(type) {
 	case *LogicalExpContext:
 		return val.Accept(a)
@@ -80,7 +79,6 @@ func (a *ASTBuilder) VisitParenExp(ctx *ParenExpContext) interface{} {
 }
 
 func (a *ASTBuilder) VisitLogicalExp(ctx *LogicalExpContext) interface{} {
-	fmt.Println("visiting logical")
 	left := ctx.Query(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
@@ -127,11 +125,8 @@ func (a *ASTBuilder) VisitPresentExp(ctx *PresentExpContext) interface{} {
 }
 
 func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
-	fmt.Println("visiting compare")
 	key := ctx.AttrPath().Accept(a).(string)
 	value := ctx.Value().Accept(a)
-
-	fmt.Printf("got: %v %v\n", key, value)
 
 	if err, ok := value.(error); ok {
 		return err
@@ -150,28 +145,60 @@ func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 	case JsonQueryParserEQ:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
 	case JsonQueryParserNE:
-		// TODO: We actually don't currently have this, and we need to return this surrounded in a not.
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_UNSPECIFIED
+		// We need to special case not equal to return equals with a surrounding not.
+		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
+		return &rulesv1beta2.Rule{
+			Rule: &rulesv1beta2.Rule_Not{
+				Not: &rulesv1beta2.Rule{
+					Rule: &rulesv1beta2.Rule_Atom{
+						Atom: atom,
+					},
+				},
+			},
+		}
 	case JsonQueryParserGT:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserLT:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN
+		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserLE:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS
+		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserGE:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserCO:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS
+		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserSW:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH
+		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserEW:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH
+		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	case JsonQueryParserIN:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN
+		if _, ok := valueR.GetKind().(*structpb.Value_ListValue); !ok {
+			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
+		}
 	default:
 		return fmt.Errorf("invalid token: %v", ctx.op.GetTokenType())
 	}
-	fmt.Printf("got to the end: %v\n", atom)
 	return &rulesv1beta2.Rule{
 		Rule: &rulesv1beta2.Rule_Atom{
 			Atom: atom,
