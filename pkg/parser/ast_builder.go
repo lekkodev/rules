@@ -150,8 +150,17 @@ func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 	case JsonQueryParserEQ:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
 	case JsonQueryParserNE:
-		// TODO: We actually don't currently have this, and we need to return this surrounded in a not.
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_UNSPECIFIED
+		// We need to special case not equal to return equals with a surrounding not.
+		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
+		return &rulesv1beta2.Rule{
+			Rule: &rulesv1beta2.Rule_Not{
+				Not: &rulesv1beta2.Rule{
+					Rule: &rulesv1beta2.Rule_Atom{
+						Atom: atom,
+					},
+				},
+			},
+		}
 	case JsonQueryParserGT:
 		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
 	case JsonQueryParserLT:
