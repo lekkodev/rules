@@ -1,20 +1,22 @@
-name: Go
-
-on: [push, pull_request]
+name: ci
+on: push
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.18
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Configure git for private modules
+        env:
+          TOKEN: ${{ secrets.CI_PERSONAL_ACCESS_TOKEN }}
+        run: git config --global --add url."https://lekkoci:${TOKEN}@github.com".insteadOf "https://github.com"
+      - name: setup-go
+        if: success()
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18.0
+      - name: ci
+        if: success()
+        run: make ci

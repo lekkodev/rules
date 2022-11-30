@@ -56,6 +56,17 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 			retErr = fmt.Errorf("%q\nstack:\n %v", info, string(debug.Stack()))
 		}
 	}()
+	tree, err := lexAndParse(rule)
+	if err != nil {
+		return nil, err
+	}
+	return &Evaluator{
+		rule: rule,
+		tree: tree,
+	}, nil
+}
+
+func lexAndParse(rule string) (antlr.ParseTree, error) {
 	input := antlr.NewInputStream(rule)
 	errListener := new(errorListener)
 	lex := NewJsonQueryLexer(input)
@@ -74,10 +85,7 @@ func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
 	if err := errListener.Error(); err != nil {
 		return nil, err
 	}
-	return &Evaluator{
-		rule: rule,
-		tree: tree,
-	}, nil
+	return tree, nil
 }
 
 func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr error) {

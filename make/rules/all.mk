@@ -7,6 +7,7 @@ BUF_LINT_INPUT := .
 BUF_FORMAT_INPUT := .
 
 GO_ALL_REPO_PKGS := ./cmd/... ./pkg/...
+GO_PRIVATE := $(GOPRIVATE),github.com/lekkodev/*
 
 include make/go/bootstrap.mk
 include make/go/go.mk
