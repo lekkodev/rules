@@ -49,7 +49,6 @@ func BuildAST(rule string) (*rulesv1beta2.Rule, error) {
 }
 
 func (a *ASTBuilder) Visit(tree antlr.ParseTree) interface{} {
-	fmt.Println("visiting")
 	switch val := tree.(type) {
 	case *LogicalExpContext:
 		return val.Accept(a)
@@ -80,7 +79,6 @@ func (a *ASTBuilder) VisitParenExp(ctx *ParenExpContext) interface{} {
 }
 
 func (a *ASTBuilder) VisitLogicalExp(ctx *LogicalExpContext) interface{} {
-	fmt.Println("visiting logical")
 	left := ctx.Query(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
@@ -127,11 +125,8 @@ func (a *ASTBuilder) VisitPresentExp(ctx *PresentExpContext) interface{} {
 }
 
 func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
-	fmt.Println("visiting compare")
 	key := ctx.AttrPath().Accept(a).(string)
 	value := ctx.Value().Accept(a)
-
-	fmt.Printf("got: %v %v\n", key, value)
 
 	if err, ok := value.(error); ok {
 		return err
@@ -204,7 +199,6 @@ func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 	default:
 		return fmt.Errorf("invalid token: %v", ctx.op.GetTokenType())
 	}
-	fmt.Printf("got to the end: %v\n", atom)
 	return &rulesv1beta2.Rule{
 		Rule: &rulesv1beta2.Rule_Atom{
 			Atom: atom,
