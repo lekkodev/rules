@@ -57,6 +57,23 @@ func TestASTParser(t *testing.T) {
 			`{"logical_expression": {"first_rule": {"atom": {"context_key": "prefix", "comparison_operator": "COMPARISON_OPERATOR_STARTS_WITH", "comparison_value": "pre"}}, "second_rule": {"logical_expression": { "first_rule": {"atom": {"context_key": "suffix", "comparison_operator": "COMPARISON_OPERATOR_ENDS_WITH", "comparison_value": "ix"}}, "second_rule": {"atom": {"context_key": "hello", "comparison_operator": "COMPARISON_OPERATOR_EQUALS", "comparison_value": "george"}}, "logical_operator": "LOGICAL_OPERATOR_AND"}}, "logical_operator": "LOGICAL_OPERATOR_OR"}}`,
 			false,
 		},
+		{
+			`prefix sw []`,
+			"",
+			true,
+		},
+		{
+			// We should consider treating in as a contains if it applies to a string value.
+			// For now, lets error.
+			`prefix in "string"`,
+			"",
+			true,
+		},
+		{
+			`prefix > ""`,
+			"",
+			true,
+		},
 	}
 	for _, tt := range tests {
 		result, err := BuildAST(tt.rule)
