@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Code generated from JsonQuery.g4 by ANTLR 4.10.1. DO NOT EDIT.
+// Code generated from ./pkg/parser/JsonQuery.g4 by ANTLR 4.12.0. DO NOT EDIT.
 
 package parser // JsonQuery
 
-import "github.com/antlr/antlr4/runtime/Go/antlr"
+import "github.com/antlr/antlr4/runtime/Go/antlr/v4"
 
 // A complete Visitor for a parse tree produced by JsonQueryParser.
 type JsonQueryVisitor interface {
@@ -25,14 +25,17 @@ type JsonQueryVisitor interface {
 	// Visit a parse tree produced by JsonQueryParser#compareExp.
 	VisitCompareExp(ctx *CompareExpContext) interface{}
 
+	// Visit a parse tree produced by JsonQueryParser#andLogicalExp.
+	VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{}
+
 	// Visit a parse tree produced by JsonQueryParser#parenExp.
 	VisitParenExp(ctx *ParenExpContext) interface{}
 
 	// Visit a parse tree produced by JsonQueryParser#presentExp.
 	VisitPresentExp(ctx *PresentExpContext) interface{}
 
-	// Visit a parse tree produced by JsonQueryParser#logicalExp.
-	VisitLogicalExp(ctx *LogicalExpContext) interface{}
+	// Visit a parse tree produced by JsonQueryParser#orLogicalExp.
+	VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{}
 
 	// Visit a parse tree produced by JsonQueryParser#attrPath.
 	VisitAttrPath(ctx *AttrPathContext) interface{}

@@ -2,7 +2,8 @@ grammar JsonQuery;
 
 query
    : NOT? SP? '(' query ')'                                                                         #parenExp
-   | query SP LOGICAL_OPERATOR SP query                                                             #logicalExp
+   | query SP AND_OPERATOR SP query                                                                 #andLogicalExp
+   | query SP OR_OPERATOR SP query                                                                  #orLogicalExp
    | attrPath SP 'pr'                                                                               #presentExp
    | attrPath SP op=( EQ | NE | GT | LT | GE | LE | CO | SW | EW | IN ) SP value       #compareExp
    ;
@@ -11,8 +12,12 @@ NOT
    : 'not' | 'NOT'
    ;
 
-LOGICAL_OPERATOR
-   : 'and' | 'or'
+AND_OPERATOR
+   : 'and' | 'AND'
+   ;
+
+OR_OPERATOR
+   : 'or' | 'OR'
    ;
 
 BOOLEAN
