@@ -32,7 +32,7 @@ func TestASTParserV3(t *testing.T) {
 			false,
 		},
 		{
-			`region IN ["USA", "EUROPE"]`,
+			`region IN ["USA", "EUROPE"]`, // double quotes vs. single quotes above
 			`{"atom": {"context_key": "region", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value": ["USA", "EUROPE"]}}`,
 			false,
 		},
