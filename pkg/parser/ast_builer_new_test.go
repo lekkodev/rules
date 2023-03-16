@@ -27,6 +27,11 @@ import (
 func TestASTParserV3(t *testing.T) {
 	tests := []astTestCase{
 		{
+			`region IN ['USA', 'EUROPE']`,
+			`{"atom": {"context_key": "region", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value": ["USA", "EUROPE"]}}`,
+			false,
+		},
+		{
 			`region IN ["USA", "EUROPE"]`,
 			`{"atom": {"context_key": "region", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value": ["USA", "EUROPE"]}}`,
 			false,

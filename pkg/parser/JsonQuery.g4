@@ -80,6 +80,7 @@ VERSION
 
 STRING
    : '"' (ESC | ~ ["\\])* '"'
+   | '\'' (ESC | ~ ['\\])* '\''
    ;
 
 listStrings
