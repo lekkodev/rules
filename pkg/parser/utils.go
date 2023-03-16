@@ -16,17 +16,16 @@ package parser
 
 import (
 	"fmt"
-	"runtime/debug"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 	"github.com/pkg/errors"
 )
 
-type Evaluator struct {
-	rule string
-	tree antlr.ParseTree
-
-	testHookPanic func()
+func getString(s string) string {
+	if len(s) > 2 {
+		return s[1 : len(s)-1]
+	}
+	return ""
 }
 
 type errorListener struct {
@@ -45,25 +44,6 @@ func (e *errorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 
 func (e *errorListener) Error() error {
 	return e.err
-}
-
-func NewEvaluator(rule string) (ret *Evaluator, retErr error) {
-	// antlr lib has panics for exceptions so we have to put a recover here
-	// in the unlikely case there is an exception
-	defer func() {
-		info := recover()
-		if info != nil {
-			retErr = fmt.Errorf("%q\nstack:\n %v", info, string(debug.Stack()))
-		}
-	}()
-	tree, err := lexAndParse(rule)
-	if err != nil {
-		return nil, err
-	}
-	return &Evaluator{
-		rule: rule,
-		tree: tree,
-	}, nil
 }
 
 func lexAndParse(rule string) (antlr.ParseTree, error) {
@@ -86,36 +66,4 @@ func lexAndParse(rule string) (antlr.ParseTree, error) {
 		return nil, err
 	}
 	return tree, nil
-}
-
-func (e *Evaluator) Process(items map[string]interface{}) (ret bool, retErr error) {
-	// antlr lib has panics for exceptions so we have to put a recover here
-	// in the unlikely case there is an exception
-	defer func() {
-		info := recover()
-		if info != nil {
-			retErr = fmt.Errorf("%q\nstack:\n %v", info, string(debug.Stack()))
-			ret = false
-		}
-	}()
-
-	visitor := NewJsonQueryVisitorImpl(items)
-	result := visitor.Visit(e.tree)
-	if e.testHookPanic != nil {
-		defer e.testHookPanic()
-	}
-	if result == nil || visitor.err != nil {
-		return false, visitor.err
-	}
-
-	return result.(bool), visitor.err
-}
-
-func Evaluate(rule string, items map[string]interface{}) bool {
-	ev, err := NewEvaluator(rule)
-	if err != nil {
-		return false
-	}
-	result, _ := ev.Process(items)
-	return result
 }

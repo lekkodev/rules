@@ -48,6 +48,11 @@ func TestASTParser(t *testing.T) {
 			false,
 		},
 		{
+			`prefix sw "pre" or suffix ew "ix" and hello == "george"`,
+			`{"logical_expression": {"first_rule": {"atom": {"context_key": "prefix", "comparison_operator": "COMPARISON_OPERATOR_STARTS_WITH", "comparison_value": "pre"}}, "second_rule": {"logical_expression": { "first_rule": {"atom": {"context_key": "suffix", "comparison_operator": "COMPARISON_OPERATOR_ENDS_WITH", "comparison_value": "ix"}}, "second_rule": {"atom": {"context_key": "hello", "comparison_operator": "COMPARISON_OPERATOR_EQUALS", "comparison_value": "george"}}, "logical_operator": "LOGICAL_OPERATOR_AND"}}, "logical_operator": "LOGICAL_OPERATOR_OR"}}`,
+			false,
+		},
+		{
 			`not (prefix sw "pre" or suffix ew "ix") and hello == "george"`,
 			`{"logical_expression": {"first_rule": {"not": {"logical_expression": { "first_rule": {"atom": {"context_key": "prefix", "comparison_operator": "COMPARISON_OPERATOR_STARTS_WITH", "comparison_value": "pre"}}, "second_rule": {"atom": {"context_key": "suffix", "comparison_operator": "COMPARISON_OPERATOR_ENDS_WITH", "comparison_value": "ix"}}, "logical_operator": "LOGICAL_OPERATOR_OR"}}}, "second_rule": {"atom": {"context_key": "hello", "comparison_operator": "COMPARISON_OPERATOR_EQUALS", "comparison_value": "george"}}, "logical_operator": "LOGICAL_OPERATOR_AND"}}`,
 			false,

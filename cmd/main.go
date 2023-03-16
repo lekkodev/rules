@@ -37,11 +37,7 @@ func main() {
 	if err := json.Unmarshal([]byte(jsonFile), &info); err != nil {
 		log.Fatalf("Error unmarshalling from file %v", err)
 	}
-	ev, err := parser.NewEvaluator(rulesString)
-	if err != nil {
-		log.Fatalf("Error making evaluator from the rule %v, %v", rulesString, err)
-	}
-	ans, err := ev.Process(info)
+	ans, err := parser.BuildASTV3(rulesString)
 	if err != nil {
 		log.Fatal(err)
 	}

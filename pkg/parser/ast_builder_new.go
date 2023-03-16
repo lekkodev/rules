@@ -18,31 +18,30 @@ import (
 	"fmt"
 	"strconv"
 
-	rulesv1beta2 "github.com/lekkodev/cli/pkg/gen/proto/go/lekko/rules/v1beta2"
+	rulesv1beta3 "github.com/lekkodev/cli/pkg/gen/proto/go/lekko/rules/v1beta3"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-// Please use ASTBuilderV3 for n-ary ands and ors.
-// This structure only supports parsing into binary tree versions of ands and ors.
-type ASTBuilder struct {
+// ASTBuilderV3 correctly parses into the rulesv1beta3 model which supports n-ary ands and ors.
+type ASTBuilderV3 struct {
 	antlr.ParseTreeVisitor
 }
 
-func NewASTBuilder() *ASTBuilder {
-	return &ASTBuilder{}
+func NewASTBuilderV3() *ASTBuilderV3 {
+	return &ASTBuilderV3{}
 }
 
-func BuildAST(rule string) (*rulesv1beta2.Rule, error) {
+func BuildASTV3(rule string) (*rulesv1beta3.Rule, error) {
 	tree, err := lexAndParse(rule)
 	if err != nil {
 		return nil, err
 	}
-	switch v := NewASTBuilder().Visit(tree).(type) {
+	switch v := NewASTBuilderV3().Visit(tree).(type) {
 	case error:
 		return nil, v
-	case *rulesv1beta2.Rule:
+	case *rulesv1beta3.Rule:
 		return v, nil
 	default:
 		return nil, fmt.Errorf("unknown type during AST building: %v %T", v, v)
@@ -50,7 +49,7 @@ func BuildAST(rule string) (*rulesv1beta2.Rule, error) {
 
 }
 
-func (a *ASTBuilder) Visit(tree antlr.ParseTree) interface{} {
+func (a *ASTBuilderV3) Visit(tree antlr.ParseTree) interface{} {
 	switch val := tree.(type) {
 	case *AndLogicalExpContext:
 		return val.Accept(a)
@@ -67,27 +66,27 @@ func (a *ASTBuilder) Visit(tree antlr.ParseTree) interface{} {
 	}
 }
 
-func (a *ASTBuilder) VisitParenExp(ctx *ParenExpContext) interface{} {
+func (a *ASTBuilderV3) VisitParenExp(ctx *ParenExpContext) interface{} {
 	v := ctx.Query().Accept(a)
 	if err, ok := v.(error); ok {
 		return err
 	}
-	r, ok := v.(*rulesv1beta2.Rule)
+	r, ok := v.(*rulesv1beta3.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", v)
 	}
 	if ctx.NOT() != nil {
-		return &rulesv1beta2.Rule{Rule: &rulesv1beta2.Rule_Not{Not: r}}
+		return &rulesv1beta3.Rule{Rule: &rulesv1beta3.Rule_Not{Not: r}}
 	}
 	return v
 }
 
-func (a *ASTBuilder) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{} {
+func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{} {
 	left := ctx.Query(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
 	}
-	leftR, ok := left.(*rulesv1beta2.Rule)
+	leftR, ok := left.(*rulesv1beta3.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
@@ -96,27 +95,35 @@ func (a *ASTBuilder) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{} {
 	if err, ok := right.(error); ok {
 		return err
 	}
-	rightR, ok := right.(*rulesv1beta2.Rule)
+	rightR, ok := right.(*rulesv1beta3.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", right)
 	}
-	return &rulesv1beta2.Rule{
-		Rule: &rulesv1beta2.Rule_LogicalExpression{
-			LogicalExpression: &rulesv1beta2.LogicalExpression{
-				FirstRule:       leftR,
-				SecondRule:      rightR,
-				LogicalOperator: rulesv1beta2.LogicalOperator_LOGICAL_OPERATOR_AND,
+
+	// special case the left being an already constructed andlogicalexp for n-ary trees.
+	if leftExpr := leftR.GetLogicalExpression(); leftExpr != nil {
+		if leftExpr.LogicalOperator == rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_AND {
+			leftExpr.Rules = append(leftExpr.Rules, rightR)
+			return left
+		}
+	}
+
+	return &rulesv1beta3.Rule{
+		Rule: &rulesv1beta3.Rule_LogicalExpression{
+			LogicalExpression: &rulesv1beta3.LogicalExpression{
+				Rules:           []*rulesv1beta3.Rule{leftR, rightR},
+				LogicalOperator: rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_AND,
 			},
 		},
 	}
 }
 
-func (a *ASTBuilder) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
+func (a *ASTBuilderV3) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
 	left := ctx.Query(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
 	}
-	leftR, ok := left.(*rulesv1beta2.Rule)
+	leftR, ok := left.(*rulesv1beta3.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
@@ -125,33 +132,41 @@ func (a *ASTBuilder) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
 	if err, ok := right.(error); ok {
 		return err
 	}
-	rightR, ok := right.(*rulesv1beta2.Rule)
+	rightR, ok := right.(*rulesv1beta3.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", right)
 	}
-	return &rulesv1beta2.Rule{
-		Rule: &rulesv1beta2.Rule_LogicalExpression{
-			LogicalExpression: &rulesv1beta2.LogicalExpression{
-				FirstRule:       leftR,
-				SecondRule:      rightR,
-				LogicalOperator: rulesv1beta2.LogicalOperator_LOGICAL_OPERATOR_OR,
+
+	// special case the left being an already constructed orlogicalexp for n-ary trees.
+	if leftExpr := leftR.GetLogicalExpression(); leftExpr != nil {
+		if leftExpr.LogicalOperator == rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_OR {
+			leftExpr.Rules = append(leftExpr.Rules, rightR)
+			return left
+		}
+	}
+
+	return &rulesv1beta3.Rule{
+		Rule: &rulesv1beta3.Rule_LogicalExpression{
+			LogicalExpression: &rulesv1beta3.LogicalExpression{
+				Rules:           []*rulesv1beta3.Rule{leftR, rightR},
+				LogicalOperator: rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_OR,
 			},
 		},
 	}
 }
 
-func (a *ASTBuilder) VisitPresentExp(ctx *PresentExpContext) interface{} {
-	return &rulesv1beta2.Rule{
-		Rule: &rulesv1beta2.Rule_Atom{
-			Atom: &rulesv1beta2.Atom{
+func (a *ASTBuilderV3) VisitPresentExp(ctx *PresentExpContext) interface{} {
+	return &rulesv1beta3.Rule{
+		Rule: &rulesv1beta3.Rule_Atom{
+			Atom: &rulesv1beta3.Atom{
 				ContextKey:         ctx.AttrPath().Accept(a).(string),
-				ComparisonOperator: rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_PRESENT,
+				ComparisonOperator: rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_PRESENT,
 			},
 		},
 	}
 }
 
-func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
+func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 	key := ctx.AttrPath().Accept(a).(string)
 	value := ctx.Value().Accept(a)
 
@@ -163,88 +178,88 @@ func (a *ASTBuilder) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
 		return fmt.Errorf("invalid type during AST building: %v", value)
 	}
 
-	atom := &rulesv1beta2.Atom{
+	atom := &rulesv1beta3.Atom{
 		ContextKey:      key,
 		ComparisonValue: valueR,
 	}
 	// TODO: Do a type check on each righthanded operator.
 	switch ctx.op.GetTokenType() {
 	case JsonQueryParserEQ:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
 	case JsonQueryParserNE:
 		// We need to special case not equal to return equals with a surrounding not.
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
-		return &rulesv1beta2.Rule{
-			Rule: &rulesv1beta2.Rule_Not{
-				Not: &rulesv1beta2.Rule{
-					Rule: &rulesv1beta2.Rule_Atom{
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
+		return &rulesv1beta3.Rule{
+			Rule: &rulesv1beta3.Rule_Not{
+				Not: &rulesv1beta3.Rule{
+					Rule: &rulesv1beta3.Rule_Atom{
 						Atom: atom,
 					},
 				},
 			},
 		}
 	case JsonQueryParserGT:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserLT:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserLE:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserGE:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserCO:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserSW:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserEW:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserIN:
-		atom.ComparisonOperator = rulesv1beta2.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN
 		if _, ok := valueR.GetKind().(*structpb.Value_ListValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	default:
 		return fmt.Errorf("invalid token: %v", ctx.op.GetTokenType())
 	}
-	return &rulesv1beta2.Rule{
-		Rule: &rulesv1beta2.Rule_Atom{
+	return &rulesv1beta3.Rule{
+		Rule: &rulesv1beta3.Rule_Atom{
 			Atom: atom,
 		},
 	}
 }
 
-func (a *ASTBuilder) VisitAttrPath(ctx *AttrPathContext) interface{} {
+func (a *ASTBuilderV3) VisitAttrPath(ctx *AttrPathContext) interface{} {
 	if ctx.SubAttr() == nil || ctx.SubAttr().IsEmpty() {
 		return ctx.ATTRNAME().GetText()
 	}
 	return ctx.ATTRNAME().GetText() + ctx.SubAttr().Accept(a).(string)
 }
 
-func (a *ASTBuilder) VisitSubAttr(ctx *SubAttrContext) interface{} {
+func (a *ASTBuilderV3) VisitSubAttr(ctx *SubAttrContext) interface{} {
 	return ctx.AttrPath().Accept(a)
 }
 
-func (a *ASTBuilder) VisitBoolean(ctx *BooleanContext) interface{} {
+func (a *ASTBuilderV3) VisitBoolean(ctx *BooleanContext) interface{} {
 	val, err := strconv.ParseBool(ctx.GetText())
 	if err != nil {
 		return err
@@ -252,16 +267,16 @@ func (a *ASTBuilder) VisitBoolean(ctx *BooleanContext) interface{} {
 	return structpb.NewBoolValue(val)
 }
 
-func (a *ASTBuilder) VisitNull(ctx *NullContext) interface{} {
+func (a *ASTBuilderV3) VisitNull(ctx *NullContext) interface{} {
 	// TODO: not sure what to do here or if we even want to support it.
 	return nil
 }
 
-func (a *ASTBuilder) VisitString(ctx *StringContext) interface{} {
+func (a *ASTBuilderV3) VisitString(ctx *StringContext) interface{} {
 	return structpb.NewStringValue(getString(ctx.GetText()))
 }
 
-func (a *ASTBuilder) VisitDouble(ctx *DoubleContext) interface{} {
+func (a *ASTBuilderV3) VisitDouble(ctx *DoubleContext) interface{} {
 	val, err := strconv.ParseFloat(ctx.GetText(), 64)
 	if err != nil {
 		return err
@@ -269,11 +284,11 @@ func (a *ASTBuilder) VisitDouble(ctx *DoubleContext) interface{} {
 	return structpb.NewNumberValue(val)
 }
 
-func (a *ASTBuilder) VisitVersion(ctx *VersionContext) interface{} {
+func (a *ASTBuilderV3) VisitVersion(ctx *VersionContext) interface{} {
 	return structpb.NewStringValue(ctx.VERSION().GetText())
 }
 
-func (a *ASTBuilder) VisitLong(ctx *LongContext) interface{} {
+func (a *ASTBuilderV3) VisitLong(ctx *LongContext) interface{} {
 	val, err := strconv.ParseInt(ctx.GetText(), 10, 64)
 	if err != nil {
 		return err
@@ -281,15 +296,15 @@ func (a *ASTBuilder) VisitLong(ctx *LongContext) interface{} {
 	return structpb.NewNumberValue(float64(val))
 }
 
-func (a *ASTBuilder) VisitListOfInts(ctx *ListOfIntsContext) interface{} {
+func (a *ASTBuilderV3) VisitListOfInts(ctx *ListOfIntsContext) interface{} {
 	return ctx.ListInts().Accept(a)
 }
 
-func (a *ASTBuilder) VisitListInts(ctx *ListIntsContext) interface{} {
+func (a *ASTBuilderV3) VisitListInts(ctx *ListIntsContext) interface{} {
 	return ctx.SubListOfInts().Accept(a)
 }
 
-func (a *ASTBuilder) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
+func (a *ASTBuilderV3) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
 	val, err := strconv.ParseInt(ctx.INT().GetText(), 10, 64)
 	if err != nil {
 		return err
@@ -314,15 +329,15 @@ func (a *ASTBuilder) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
 	return restL
 }
 
-func (a *ASTBuilder) VisitListOfDoubles(ctx *ListOfDoublesContext) interface{} {
+func (a *ASTBuilderV3) VisitListOfDoubles(ctx *ListOfDoublesContext) interface{} {
 	return ctx.ListDoubles().Accept(a)
 }
 
-func (a *ASTBuilder) VisitListDoubles(ctx *ListDoublesContext) interface{} {
+func (a *ASTBuilderV3) VisitListDoubles(ctx *ListDoublesContext) interface{} {
 	return ctx.SubListOfDoubles().Accept(a)
 }
 
-func (a *ASTBuilder) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interface{} {
+func (a *ASTBuilderV3) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interface{} {
 	val, err := strconv.ParseFloat(ctx.DOUBLE().GetText(), 64)
 	if err != nil {
 		return err
@@ -347,15 +362,15 @@ func (a *ASTBuilder) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interfa
 	return restL
 }
 
-func (a *ASTBuilder) VisitListOfStrings(ctx *ListOfStringsContext) interface{} {
+func (a *ASTBuilderV3) VisitListOfStrings(ctx *ListOfStringsContext) interface{} {
 	return ctx.ListStrings().Accept(a)
 }
 
-func (a *ASTBuilder) VisitListStrings(ctx *ListStringsContext) interface{} {
+func (a *ASTBuilderV3) VisitListStrings(ctx *ListStringsContext) interface{} {
 	return ctx.SubListOfStrings().Accept(a)
 }
 
-func (a *ASTBuilder) VisitSubListOfStrings(ctx *SubListOfStringsContext) interface{} {
+func (a *ASTBuilderV3) VisitSubListOfStrings(ctx *SubListOfStringsContext) interface{} {
 	val := getString(ctx.STRING().GetText())
 	if ctx.SubListOfStrings() == nil || ctx.SubListOfStrings().IsEmpty() {
 		res, err := structpb.NewList([]interface{}{val})
