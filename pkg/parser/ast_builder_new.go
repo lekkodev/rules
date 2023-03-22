@@ -187,17 +187,7 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 	case JsonQueryParserEQ:
 		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
 	case JsonQueryParserNE:
-		// We need to special case not equal to return equals with a surrounding not.
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
-		return &rulesv1beta3.Rule{
-			Rule: &rulesv1beta3.Rule_Not{
-				Not: &rulesv1beta3.Rule{
-					Rule: &rulesv1beta3.Rule_Atom{
-						Atom: atom,
-					},
-				},
-			},
-		}
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_NOT_EQUALS
 	case JsonQueryParserGT:
 		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
@@ -214,7 +204,7 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserGE:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN_OR_EQUALS
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}

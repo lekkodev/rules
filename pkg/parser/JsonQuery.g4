@@ -9,15 +9,15 @@ query
    ;
 
 NOT
-   : 'not' | 'NOT'
+   : 'not' | 'NOT' | '!'
    ;
 
 AND_OPERATOR
-   : 'and' | 'AND'
+   : 'and' | 'AND' | '&&'
    ;
 
 OR_OPERATOR
-   : 'or' | 'OR'
+   : 'or' | 'OR' | '||'
    ;
 
 BOOLEAN
