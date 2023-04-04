@@ -3,11 +3,11 @@ module github.com/lekkodev/rules
 go 1.18
 
 require (
+	buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230331213330-4bc53e9658b8.1
 	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230305170008-8188dc5388df
-	github.com/lekkodev/cli v0.2.10
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
