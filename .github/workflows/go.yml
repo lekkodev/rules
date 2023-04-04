@@ -3,8 +3,6 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GOPRIVATE: github.com/lekkodev/*,buf.build/gen/go
     steps:
       - name: checkout
         uses: actions/checkout@v3
