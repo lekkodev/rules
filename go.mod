@@ -1,6 +1,6 @@
 module github.com/lekkodev/rules
 
-go 1.18
+go 1.19
 
 require (
 	buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230331213330-4bc53e9658b8.1
