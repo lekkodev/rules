@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
-	rulesv1beta3 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
+	rulesv1beta3 "github.com/lekkodev/cli/pkg/gen/proto/go/lekko/rules/v1beta3"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 	"google.golang.org/protobuf/types/known/structpb"
