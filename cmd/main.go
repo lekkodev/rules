@@ -17,18 +17,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/lekkodev/rules/pkg/parser"
 )
 
 func main() {
-	jsonFile, err := ioutil.ReadFile("test.json")
+	jsonFile, err := os.ReadFile("test.json")
 	if err != nil {
 		log.Fatalf("Error reading obj from file %v", err)
 	}
-	rulesBytes, err := ioutil.ReadFile("rules.txt")
+	rulesBytes, err := os.ReadFile("rules.txt")
 	if err != nil {
 		log.Fatalf("Error reading rule from file %v", err)
 	}
