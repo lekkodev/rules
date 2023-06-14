@@ -20,7 +20,7 @@ import (
 
 	rulesv1beta2 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta2"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
+	"github.com/antlr4-go/antlr/v4"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 

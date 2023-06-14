@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Code generated from ./pkg/parser/JsonQuery.g4 by ANTLR 4.12.0. DO NOT EDIT.
+// Code generated from JsonQuery.g4 by ANTLR 4.13.0. DO NOT EDIT.
 
 package parser // JsonQuery
 
-import "github.com/antlr/antlr4/runtime/Go/antlr/v4"
+import "github.com/antlr4-go/antlr/v4"
 
 // A complete Visitor for a parse tree produced by JsonQueryParser.
 type JsonQueryVisitor interface {
@@ -33,6 +33,9 @@ type JsonQueryVisitor interface {
 
 	// Visit a parse tree produced by JsonQueryParser#presentExp.
 	VisitPresentExp(ctx *PresentExpContext) interface{}
+
+	// Visit a parse tree produced by JsonQueryParser#callExp.
+	VisitCallExp(ctx *CallExpContext) interface{}
 
 	// Visit a parse tree produced by JsonQueryParser#orLogicalExp.
 	VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{}
@@ -70,6 +73,9 @@ type JsonQueryVisitor interface {
 	// Visit a parse tree produced by JsonQueryParser#listOfStrings.
 	VisitListOfStrings(ctx *ListOfStringsContext) interface{}
 
+	// Visit a parse tree produced by JsonQueryParser#listOfBooleans.
+	VisitListOfBooleans(ctx *ListOfBooleansContext) interface{}
+
 	// Visit a parse tree produced by JsonQueryParser#listStrings.
 	VisitListStrings(ctx *ListStringsContext) interface{}
 
@@ -87,4 +93,13 @@ type JsonQueryVisitor interface {
 
 	// Visit a parse tree produced by JsonQueryParser#subListOfInts.
 	VisitSubListOfInts(ctx *SubListOfIntsContext) interface{}
+
+	// Visit a parse tree produced by JsonQueryParser#listBooleans.
+	VisitListBooleans(ctx *ListBooleansContext) interface{}
+
+	// Visit a parse tree produced by JsonQueryParser#subListOfBooleans.
+	VisitSubListOfBooleans(ctx *SubListOfBooleansContext) interface{}
+
+	// Visit a parse tree produced by JsonQueryParser#functionArg.
+	VisitFunctionArg(ctx *FunctionArgContext) interface{}
 }
