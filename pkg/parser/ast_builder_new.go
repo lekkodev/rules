@@ -382,6 +382,10 @@ func (a *ASTBuilderV3) VisitSubListOfStrings(ctx *SubListOfStringsContext) inter
 	return restL
 }
 
+func (a *ASTBuilderV3) VisitListOfBooleans(ctx *ListOfBooleansContext) interface{} {
+	return ctx.ListBooleans().Accept(a)
+}
+
 func (a *ASTBuilderV3) VisitListBooleans(ctx *ListBooleansContext) interface{} {
 	return ctx.SubListOfBooleans().Accept(a)
 }
