@@ -83,6 +83,12 @@ func TestASTParserV3(t *testing.T) {
 			"",
 			true,
 		},
+		{
+			// This function is not in the supported options
+			`not_impl_func(id)`,
+			"",
+			true,
+		},
 	}
 	for _, tt := range tests {
 		result, err := BuildASTV3(tt.rule)

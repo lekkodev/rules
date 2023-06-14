@@ -376,3 +376,23 @@ func (a *ASTBuilder) VisitSubListOfStrings(ctx *SubListOfStringsContext) interfa
 	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewStringValue(val)}, restL.GetListValue().Values...)
 	return restL
 }
+
+func (a *ASTBuilder) VisitListOfBooleans(ctx *ListOfBooleansContext) interface{} {
+	return fmt.Errorf("using deprecated ASTBuilder for parsing: %v", ctx.GetText())
+}
+
+func (a *ASTBuilder) VisitListBooleans(ctx *ListBooleansContext) interface{} {
+	return fmt.Errorf("using deprecated ASTBuilder for parsing: %v", ctx.GetText())
+}
+
+func (a *ASTBuilder) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) interface{} {
+	return fmt.Errorf("using deprecated ASTBuilder for parsing: %v", ctx.GetText())
+}
+
+func (a *ASTBuilder) VisitCallExp(ctx *CallExpContext) interface{} {
+	return fmt.Errorf("using deprecated ASTBuilder for parsing: %v", ctx.GetText())
+}
+
+func (a *ASTBuilder) VisitFunctionArg(ctx *FunctionArgContext) interface{} {
+	return fmt.Errorf("using deprecated ASTBuilder for parsing: %v", ctx.GetText())
+}
