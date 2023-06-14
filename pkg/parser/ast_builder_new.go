@@ -61,6 +61,8 @@ func (a *ASTBuilderV3) Visit(tree antlr.ParseTree) interface{} {
 		return val.Accept(a)
 	case *PresentExpContext:
 		return val.Accept(a)
+	case *CallExpContext:
+		return val.Accept(a)
 	default:
 		return fmt.Errorf("invalid tree type: %v", val)
 	}
@@ -238,6 +240,17 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 	}
 }
 
+func (a *ASTBuilderV3) VisitCallExp(ctx *CallExpContext) interface{} {
+	funcName := ctx.AttrPath().Accept(a).(string)
+
+	funcVisitor, ok := functionVisitors[funcName]
+	if !ok {
+		return fmt.Errorf("invalid function name for call expression during AST building: %v", funcName)
+	}
+
+	return funcVisitor(a, ctx)
+}
+
 func (a *ASTBuilderV3) VisitAttrPath(ctx *AttrPathContext) interface{} {
 	if ctx.SubAttr() == nil || ctx.SubAttr().IsEmpty() {
 		return ctx.ATTRNAME().GetText()
@@ -413,4 +426,18 @@ func (a *ASTBuilderV3) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) int
 	}
 	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewBoolValue(val)}, restL.GetListValue().Values...)
 	return restL
+}
+
+func (a *ASTBuilderV3) VisitFunctionArg(ctx *FunctionArgContext) interface{} {
+	if ctx.Query() != nil {
+		return ctx.Query().Accept(a)
+	}
+	if ctx.AttrPath() != nil {
+		return ctx.AttrPath().Accept(a)
+	}
+	if ctx.Value() != nil {
+		return ctx.Value().Accept(a)
+	}
+
+	return fmt.Errorf("unknown type of function arg when parsing: %v", ctx.GetText())
 }
