@@ -381,3 +381,32 @@ func (a *ASTBuilderV3) VisitSubListOfStrings(ctx *SubListOfStringsContext) inter
 	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewStringValue(val)}, restL.GetListValue().Values...)
 	return restL
 }
+
+func (a *ASTBuilderV3) VisitListBooleans(ctx *ListBooleansContext) interface{} {
+	return ctx.SubListOfBooleans().Accept(a)
+}
+
+func (a *ASTBuilderV3) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) interface{} {
+	val, err := strconv.ParseBool(ctx.BOOLEAN().GetText())
+	if err != nil {
+		return err
+	}
+	if ctx.SubListOfBooleans() == nil || ctx.SubListOfBooleans().IsEmpty() {
+		res, err := structpb.NewList([]interface{}{val})
+		if err != nil {
+			return err
+		}
+		return structpb.NewListValue(res)
+	}
+
+	rest := ctx.SubListOfBooleans().Accept(a)
+	if err, ok := rest.(error); ok {
+		return err
+	}
+	restL, ok := rest.(*structpb.Value)
+	if !ok {
+		return fmt.Errorf("unknown type when parsing list of booleans: %v", rest)
+	}
+	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewBoolValue(val)}, restL.GetListValue().Values...)
+	return restL
+}
