@@ -95,6 +95,33 @@ func TestASTParserV3(t *testing.T) {
 			"",
 			true,
 		},
+		{
+			`bucket(id, 10000)`,
+			`{"call_expression": {"bucket": {"context_key": "id", "threshold": 10000}}}`,
+			false,
+		},
+		{
+			// Not enough args
+			`bucket(id)`,
+			"",
+			true,
+		},
+		{
+			// Too many args
+			`bucket(id, 10000, "extra")`,
+			"",
+			true,
+		},
+		{
+			`bucket("wrong", "types")`,
+			"",
+			true,
+		},
+		{
+			`bucket(id, 0.99)`,
+			"",
+			true,
+		},
 	}
 	for _, tt := range tests {
 		result, err := BuildASTV3(tt.rule)
