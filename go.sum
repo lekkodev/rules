@@ -1,5 +1,6 @@
-buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230331213330-4bc53e9658b8.1 h1:dpGS6pKM6TJ6MXN5b2DVbg9lvvYj+Zd6/kePtpcKksM=
-buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230331213330-4bc53e9658b8.1/go.mod h1:k8LDgZDmmXoT8LRJBCFFt5AAu98aZh9IYZgtFPTNsAI=
+buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230614183715-890c7a85aff8.1 h1:eeRHEk15TOQNz0CPsocbAJNfSHWxji/mQKbBm9ddAx0=
+buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230614183715-890c7a85aff8.1/go.mod h1:qijTOXmCa9QRYY5jUPpXBh0TqOathvHp/Fap3CdjA8U=
+buf.build/gen/go/lekkodev/sdk/protocolbuffers/go v1.30.0-20230419180142-0694c10ef23c.1/go.mod h1:Abc3XPzGO1gMBxFO7cEr6oy5AhahszvenAckrydG2qE=
 github.com/antlr4-go/antlr/v4 v4.13.0 h1:lxCg3LAv+EUK6t1i0y1V6/SLeUi0eKEKdhQAlS8TVTI=
 github.com/antlr4-go/antlr/v4 v4.13.0/go.mod h1:pfChB/xh/Unjila75QW7+VU4TSnWnnk9UTnmpPaOR2g=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

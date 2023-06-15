@@ -3,7 +3,7 @@ module github.com/lekkodev/rules
 go 1.19
 
 require (
-	buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230331213330-4bc53e9658b8.1
+	buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.30.0-20230614183715-890c7a85aff8.1
 	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0

@@ -24,6 +24,12 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+type astTestCase struct {
+	rule       string
+	jsonResult string
+	error      bool
+}
+
 func TestASTParserV3(t *testing.T) {
 	tests := []astTestCase{
 		{
