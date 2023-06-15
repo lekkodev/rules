@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
-	rulesv1beta3 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
+	rules "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 
 	"github.com/antlr4-go/antlr/v4"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -33,7 +33,7 @@ func NewASTBuilderV3() *ASTBuilderV3 {
 	return &ASTBuilderV3{}
 }
 
-func BuildASTV3(rule string) (*rulesv1beta3.Rule, error) {
+func BuildASTV3(rule string) (*rules.Rule, error) {
 	tree, err := lexAndParse(rule)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func BuildASTV3(rule string) (*rulesv1beta3.Rule, error) {
 	switch v := NewASTBuilderV3().Visit(tree).(type) {
 	case error:
 		return nil, v
-	case *rulesv1beta3.Rule:
+	case *rules.Rule:
 		return v, nil
 	default:
 		return nil, fmt.Errorf("unknown type during AST building: %v %T", v, v)
@@ -73,12 +73,12 @@ func (a *ASTBuilderV3) VisitParenExp(ctx *ParenExpContext) interface{} {
 	if err, ok := v.(error); ok {
 		return err
 	}
-	r, ok := v.(*rulesv1beta3.Rule)
+	r, ok := v.(*rules.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", v)
 	}
 	if ctx.NOT() != nil {
-		return &rulesv1beta3.Rule{Rule: &rulesv1beta3.Rule_Not{Not: r}}
+		return &rules.Rule{Rule: &rules.Rule_Not{Not: r}}
 	}
 	return v
 }
@@ -88,7 +88,7 @@ func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{}
 	if err, ok := left.(error); ok {
 		return err
 	}
-	leftR, ok := left.(*rulesv1beta3.Rule)
+	leftR, ok := left.(*rules.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
@@ -97,24 +97,24 @@ func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{}
 	if err, ok := right.(error); ok {
 		return err
 	}
-	rightR, ok := right.(*rulesv1beta3.Rule)
+	rightR, ok := right.(*rules.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", right)
 	}
 
 	// special case the left being an already constructed andlogicalexp for n-ary trees.
 	if leftExpr := leftR.GetLogicalExpression(); leftExpr != nil {
-		if leftExpr.LogicalOperator == rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_AND {
+		if leftExpr.LogicalOperator == rules.LogicalOperator_LOGICAL_OPERATOR_AND {
 			leftExpr.Rules = append(leftExpr.Rules, rightR)
 			return left
 		}
 	}
 
-	return &rulesv1beta3.Rule{
-		Rule: &rulesv1beta3.Rule_LogicalExpression{
-			LogicalExpression: &rulesv1beta3.LogicalExpression{
-				Rules:           []*rulesv1beta3.Rule{leftR, rightR},
-				LogicalOperator: rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_AND,
+	return &rules.Rule{
+		Rule: &rules.Rule_LogicalExpression{
+			LogicalExpression: &rules.LogicalExpression{
+				Rules:           []*rules.Rule{leftR, rightR},
+				LogicalOperator: rules.LogicalOperator_LOGICAL_OPERATOR_AND,
 			},
 		},
 	}
@@ -125,7 +125,7 @@ func (a *ASTBuilderV3) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
 	if err, ok := left.(error); ok {
 		return err
 	}
-	leftR, ok := left.(*rulesv1beta3.Rule)
+	leftR, ok := left.(*rules.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
@@ -134,35 +134,35 @@ func (a *ASTBuilderV3) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
 	if err, ok := right.(error); ok {
 		return err
 	}
-	rightR, ok := right.(*rulesv1beta3.Rule)
+	rightR, ok := right.(*rules.Rule)
 	if !ok {
 		return fmt.Errorf("invalid type during AST building: %v", right)
 	}
 
 	// special case the left being an already constructed orlogicalexp for n-ary trees.
 	if leftExpr := leftR.GetLogicalExpression(); leftExpr != nil {
-		if leftExpr.LogicalOperator == rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_OR {
+		if leftExpr.LogicalOperator == rules.LogicalOperator_LOGICAL_OPERATOR_OR {
 			leftExpr.Rules = append(leftExpr.Rules, rightR)
 			return left
 		}
 	}
 
-	return &rulesv1beta3.Rule{
-		Rule: &rulesv1beta3.Rule_LogicalExpression{
-			LogicalExpression: &rulesv1beta3.LogicalExpression{
-				Rules:           []*rulesv1beta3.Rule{leftR, rightR},
-				LogicalOperator: rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_OR,
+	return &rules.Rule{
+		Rule: &rules.Rule_LogicalExpression{
+			LogicalExpression: &rules.LogicalExpression{
+				Rules:           []*rules.Rule{leftR, rightR},
+				LogicalOperator: rules.LogicalOperator_LOGICAL_OPERATOR_OR,
 			},
 		},
 	}
 }
 
 func (a *ASTBuilderV3) VisitPresentExp(ctx *PresentExpContext) interface{} {
-	return &rulesv1beta3.Rule{
-		Rule: &rulesv1beta3.Rule_Atom{
-			Atom: &rulesv1beta3.Atom{
+	return &rules.Rule{
+		Rule: &rules.Rule_Atom{
+			Atom: &rules.Atom{
 				ContextKey:         ctx.AttrPath().Accept(a).(string),
-				ComparisonOperator: rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_PRESENT,
+				ComparisonOperator: rules.ComparisonOperator_COMPARISON_OPERATOR_PRESENT,
 			},
 		},
 	}
@@ -180,61 +180,61 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 		return fmt.Errorf("invalid type during AST building: %v", value)
 	}
 
-	atom := &rulesv1beta3.Atom{
+	atom := &rules.Atom{
 		ContextKey:      key,
 		ComparisonValue: valueR,
 	}
 	// TODO: Do a type check on each righthanded operator.
 	switch ctx.op.GetTokenType() {
 	case JsonQueryParserEQ:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_EQUALS
 	case JsonQueryParserNE:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_NOT_EQUALS
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_NOT_EQUALS
 	case JsonQueryParserGT:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserLT:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserLE:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserGE:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN_OR_EQUALS
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN_OR_EQUALS
 		if _, ok := valueR.GetKind().(*structpb.Value_NumberValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserCO:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserSW:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserEW:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH
 		if _, ok := valueR.GetKind().(*structpb.Value_StringValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	case JsonQueryParserIN:
-		atom.ComparisonOperator = rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN
+		atom.ComparisonOperator = rules.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN
 		if _, ok := valueR.GetKind().(*structpb.Value_ListValue); !ok {
 			return fmt.Errorf("invalid type for operator %v %T", atom.ComparisonOperator, valueR)
 		}
 	default:
 		return fmt.Errorf("invalid token: %v", ctx.op.GetTokenType())
 	}
-	return &rulesv1beta3.Rule{
-		Rule: &rulesv1beta3.Rule_Atom{
+	return &rules.Rule{
+		Rule: &rules.Rule_Atom{
 			Atom: atom,
 		},
 	}
