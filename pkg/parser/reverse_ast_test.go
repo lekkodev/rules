@@ -39,6 +39,7 @@ func TestRoundTrip(t *testing.T) {
 		"u pr and u != 3",
 		"v == 1 or (w == 2 and x == 3)",
 		"bucket(a, 10)",
+		"bucket(a, 7.75)",
 	}
 	for _, tc := range cases {
 		ast, err := BuildASTV3(tc)

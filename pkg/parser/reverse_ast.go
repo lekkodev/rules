@@ -17,6 +17,7 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	rules "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 )
@@ -78,7 +79,17 @@ func RuleToString(rule *rules.Rule) (string, error) {
 	case *rules.Rule_CallExpression:
 		switch f := rule.GetCallExpression().GetFunction().(type) {
 		case *rules.CallExpression_Bucket_:
-			return fmt.Sprintf("bucket(%s, %d)", f.Bucket.GetContextKey(), f.Bucket.GetThreshold()), nil
+			thresholdPaddedStr := fmt.Sprintf("%06d", f.Bucket.GetThreshold())
+			threshold, err := strconv.ParseFloat(
+				thresholdPaddedStr[:len(thresholdPaddedStr)-3]+
+					"."+
+					thresholdPaddedStr[len(thresholdPaddedStr)-3:],
+				64,
+			)
+			if err != nil {
+				return "", err
+			}
+			return fmt.Sprintf("bucket(%s, %v)", f.Bucket.GetContextKey(), threshold), nil
 		default:
 			return "", fmt.Errorf("unknown function type %T of rule %v", f, rule)
 		}

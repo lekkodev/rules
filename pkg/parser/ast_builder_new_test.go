@@ -96,8 +96,13 @@ func TestASTParserV3(t *testing.T) {
 			true,
 		},
 		{
-			`bucket(id, 10000)`,
-			`{"call_expression": {"bucket": {"context_key": "id", "threshold": 10000}}}`,
+			`bucket(id, 0)`,
+			`{"call_expression": {"bucket": {"context_key": "id", "threshold": 0}}}`,
+			false,
+		},
+		{
+			`bucket(id, 75.125)`,
+			`{"call_expression": {"bucket": {"context_key": "id", "threshold": 75125}}}`,
 			false,
 		},
 		{
@@ -118,7 +123,14 @@ func TestASTParserV3(t *testing.T) {
 			true,
 		},
 		{
-			`bucket(id, 0.99)`,
+			// Out of range, negative
+			`bucket(id, -1)`,
+			"",
+			true,
+		},
+		{
+			// Out of range, > 100
+			`bucket(id, 100.001)`,
 			"",
 			true,
 		},
