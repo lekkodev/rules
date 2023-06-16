@@ -75,6 +75,13 @@ func RuleToString(rule *rules.Rule) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("not(%s)", inner), nil
+	case *rules.Rule_CallExpression:
+		switch f := rule.GetCallExpression().GetFunction().(type) {
+		case *rules.CallExpression_Bucket_:
+			return fmt.Sprintf("bucket(%s, %d)", f.Bucket.GetContextKey(), f.Bucket.GetThreshold()), nil
+		default:
+			return "", fmt.Errorf("unknown function type %T of rule %v", f, rule)
+		}
 	default:
 		return "", fmt.Errorf("unknown type %T of rule %v", rule.GetRule(), rule.GetRule())
 	}
