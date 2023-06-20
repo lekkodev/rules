@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Code generated from ./pkg/parser/JsonQuery.g4 by ANTLR 4.12.0. DO NOT EDIT.
+// Code generated from JsonQuery.g4 by ANTLR 4.13.0. DO NOT EDIT.
 
 package parser // JsonQuery
 
-import "github.com/antlr/antlr4/runtime/Go/antlr/v4"
+import "github.com/antlr4-go/antlr/v4"
 
 type BaseJsonQueryVisitor struct {
 	*antlr.BaseParseTreeVisitor
@@ -35,6 +35,10 @@ func (v *BaseJsonQueryVisitor) VisitParenExp(ctx *ParenExpContext) interface{} {
 }
 
 func (v *BaseJsonQueryVisitor) VisitPresentExp(ctx *PresentExpContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseJsonQueryVisitor) VisitCallExp(ctx *CallExpContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -86,6 +90,10 @@ func (v *BaseJsonQueryVisitor) VisitListOfStrings(ctx *ListOfStringsContext) int
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseJsonQueryVisitor) VisitListOfBooleans(ctx *ListOfBooleansContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseJsonQueryVisitor) VisitListStrings(ctx *ListStringsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -107,5 +115,17 @@ func (v *BaseJsonQueryVisitor) VisitListInts(ctx *ListIntsContext) interface{} {
 }
 
 func (v *BaseJsonQueryVisitor) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseJsonQueryVisitor) VisitListBooleans(ctx *ListBooleansContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseJsonQueryVisitor) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseJsonQueryVisitor) VisitFunctionArg(ctx *FunctionArgContext) interface{} {
 	return v.VisitChildren(ctx)
 }

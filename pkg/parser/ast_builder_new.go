@@ -20,7 +20,7 @@ import (
 
 	rulesv1beta3 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
+	"github.com/antlr4-go/antlr/v4"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -60,6 +60,8 @@ func (a *ASTBuilderV3) Visit(tree antlr.ParseTree) interface{} {
 	case *ParenExpContext:
 		return val.Accept(a)
 	case *PresentExpContext:
+		return val.Accept(a)
+	case *CallExpContext:
 		return val.Accept(a)
 	default:
 		return fmt.Errorf("invalid tree type: %v", val)
@@ -238,6 +240,17 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 	}
 }
 
+func (a *ASTBuilderV3) VisitCallExp(ctx *CallExpContext) interface{} {
+	funcName := ctx.AttrPath().Accept(a).(string)
+
+	funcVisitor, ok := functionVisitors[funcName]
+	if !ok {
+		return fmt.Errorf("invalid function name for call expression during AST building: %v", funcName)
+	}
+
+	return funcVisitor(a, ctx)
+}
+
 func (a *ASTBuilderV3) VisitAttrPath(ctx *AttrPathContext) interface{} {
 	if ctx.SubAttr() == nil || ctx.SubAttr().IsEmpty() {
 		return ctx.ATTRNAME().GetText()
@@ -380,4 +393,51 @@ func (a *ASTBuilderV3) VisitSubListOfStrings(ctx *SubListOfStringsContext) inter
 	}
 	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewStringValue(val)}, restL.GetListValue().Values...)
 	return restL
+}
+
+func (a *ASTBuilderV3) VisitListOfBooleans(ctx *ListOfBooleansContext) interface{} {
+	return ctx.ListBooleans().Accept(a)
+}
+
+func (a *ASTBuilderV3) VisitListBooleans(ctx *ListBooleansContext) interface{} {
+	return ctx.SubListOfBooleans().Accept(a)
+}
+
+func (a *ASTBuilderV3) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) interface{} {
+	val, err := strconv.ParseBool(ctx.BOOLEAN().GetText())
+	if err != nil {
+		return err
+	}
+	if ctx.SubListOfBooleans() == nil || ctx.SubListOfBooleans().IsEmpty() {
+		res, err := structpb.NewList([]interface{}{val})
+		if err != nil {
+			return err
+		}
+		return structpb.NewListValue(res)
+	}
+
+	rest := ctx.SubListOfBooleans().Accept(a)
+	if err, ok := rest.(error); ok {
+		return err
+	}
+	restL, ok := rest.(*structpb.Value)
+	if !ok {
+		return fmt.Errorf("unknown type when parsing list of booleans: %v", rest)
+	}
+	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewBoolValue(val)}, restL.GetListValue().Values...)
+	return restL
+}
+
+func (a *ASTBuilderV3) VisitFunctionArg(ctx *FunctionArgContext) interface{} {
+	if ctx.Query() != nil {
+		return ctx.Query().Accept(a)
+	}
+	if ctx.AttrPath() != nil {
+		return ctx.AttrPath().Accept(a)
+	}
+	if ctx.Value() != nil {
+		return ctx.Value().Accept(a)
+	}
+
+	return fmt.Errorf("unknown type of function arg when parsing: %v", ctx.GetText())
 }

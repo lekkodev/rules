@@ -5,7 +5,8 @@ query
    | query SP AND_OPERATOR SP query                                                                 #andLogicalExp
    | query SP OR_OPERATOR SP query                                                                  #orLogicalExp
    | attrPath SP 'pr'                                                                               #presentExp
-   | attrPath SP op=( EQ | NE | GT | LT | GE | LE | CO | SW | EW | IN ) SP value       #compareExp
+   | attrPath SP op=( EQ | NE | GT | LT | GE | LE | CO | SW | EW | IN ) SP value                    #compareExp
+   | attrPath '(' (functionArg COMMA)* functionArg ')'                                              #callExp
    ;
 
 NOT
@@ -72,6 +73,7 @@ value
    | listInts          #listOfInts
    | listDoubles       #listOfDoubles
    | listStrings       #listOfStrings
+   | listBooleans      #listOfBooleans
    ;
 
 VERSION
@@ -122,6 +124,20 @@ listInts
 subListOfInts
    : INT COMMA subListOfInts
    | INT ']';
+
+listBooleans
+   : '[' subListOfBooleans
+   ;
+
+subListOfBooleans
+   : BOOLEAN COMMA subListOfBooleans
+   | BOOLEAN ']';
+
+functionArg
+   : query
+   | attrPath
+   | value
+   ;
 
 // INT no leading zeros.
 INT
