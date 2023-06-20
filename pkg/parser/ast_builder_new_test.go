@@ -18,11 +18,17 @@ import (
 	"fmt"
 	"testing"
 
-	rulesv1beta3 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
+	rules "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
+
+type astTestCase struct {
+	rule       string
+	jsonResult string
+	error      bool
+}
 
 func TestASTParserV3(t *testing.T) {
 	tests := []astTestCase{
@@ -96,7 +102,7 @@ func TestASTParserV3(t *testing.T) {
 			require.Error(t, err, fmt.Sprintf("expected error didn't get one rule: %s", tt.rule))
 		} else {
 			require.NoError(t, err, "error during parsing! %s", tt.rule)
-			expectedRule := &rulesv1beta3.Rule{}
+			expectedRule := &rules.Rule{}
 			err := protojson.Unmarshal([]byte(tt.jsonResult), expectedRule)
 			require.NoError(t, err, "we shouldn't get this, test malformed: %s", tt.jsonResult)
 			require.True(t, proto.Equal(result, expectedRule), "results differ, got: %v, expected: %v", result, expectedRule)

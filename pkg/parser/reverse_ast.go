@@ -18,13 +18,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	rulesv1beta3 "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
+	rules "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 )
 
-func RuleToString(rule *rulesv1beta3.Rule) (string, error) {
+func RuleToString(rule *rules.Rule) (string, error) {
 	switch v := rule.GetRule().(type) {
-	case *rulesv1beta3.Rule_Atom:
-		if v.Atom.ComparisonOperator == rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_PRESENT {
+	case *rules.Rule_Atom:
+		if v.Atom.ComparisonOperator == rules.ComparisonOperator_COMPARISON_OPERATOR_PRESENT {
 			return fmt.Sprintf("%s pr", v.Atom.ContextKey), nil
 		}
 		op, err := OpToString(v.Atom.ComparisonOperator)
@@ -36,19 +36,19 @@ func RuleToString(rule *rulesv1beta3.Rule) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("%s %s %s", v.Atom.ContextKey, op, string(b)), nil
-	case *rulesv1beta3.Rule_BoolConst:
+	case *rules.Rule_BoolConst:
 		if v.BoolConst {
 			return "true", nil
 		}
 		return "false", nil
-	case *rulesv1beta3.Rule_LogicalExpression:
+	case *rules.Rule_LogicalExpression:
 		op := ""
 		switch v.LogicalExpression.GetLogicalOperator() {
-		case rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_UNSPECIFIED:
+		case rules.LogicalOperator_LOGICAL_OPERATOR_UNSPECIFIED:
 			return "", fmt.Errorf("unknown type %T of rule %v", rule, rule)
-		case rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_AND:
+		case rules.LogicalOperator_LOGICAL_OPERATOR_AND:
 			op = "and"
-		case rulesv1beta3.LogicalOperator_LOGICAL_OPERATOR_OR:
+		case rules.LogicalOperator_LOGICAL_OPERATOR_OR:
 			op = "or"
 		}
 		res := ""
@@ -69,7 +69,7 @@ func RuleToString(rule *rulesv1beta3.Rule) (string, error) {
 			}
 		}
 		return res, nil
-	case *rulesv1beta3.Rule_Not:
+	case *rules.Rule_Not:
 		inner, err := RuleToString(v.Not)
 		if err != nil {
 			return "", err
@@ -80,29 +80,29 @@ func RuleToString(rule *rulesv1beta3.Rule) (string, error) {
 	}
 }
 
-func OpToString(op rulesv1beta3.ComparisonOperator) (string, error) {
+func OpToString(op rules.ComparisonOperator) (string, error) {
 	switch op {
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_UNSPECIFIED:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_UNSPECIFIED:
 		return "", fmt.Errorf("invalid unspecified operator")
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_EQUALS:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_EQUALS:
 		return "==", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_NOT_EQUALS:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_NOT_EQUALS:
 		return "!=", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN:
 		return "<", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_LESS_THAN_OR_EQUALS:
 		return "<=", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN:
 		return ">", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN_OR_EQUALS:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_GREATER_THAN_OR_EQUALS:
 		return ">=", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_CONTAINED_WITHIN:
 		return "in", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_STARTS_WITH:
 		return "sw", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_ENDS_WITH:
 		return "ew", nil
-	case rulesv1beta3.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS:
+	case rules.ComparisonOperator_COMPARISON_OPERATOR_CONTAINS:
 		return "co", nil
 	default:
 		return "", fmt.Errorf("unknown operator %v", op)
