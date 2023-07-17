@@ -262,7 +262,7 @@ func (a *ASTBuilderV3) VisitAttrPath(ctx *AttrPathContext) interface{} {
 	if ctx.SubAttr() == nil || ctx.SubAttr().IsEmpty() {
 		return ctx.ATTRNAME().GetText()
 	}
-	return fmt.Errorf("invalid attribute '%s': subattributes are not supported", ctx.ATTRNAME().GetText())
+	return fmt.Errorf("invalid attribute '%s': please remove period", ctx.ATTRNAME().GetText())
 }
 
 func (a *ASTBuilderV3) VisitSubAttr(ctx *SubAttrContext) interface{} {
