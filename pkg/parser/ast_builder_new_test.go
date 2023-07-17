@@ -43,9 +43,9 @@ func TestASTParserV3(t *testing.T) {
 			false,
 		},
 		{
-			`region.name IN ['USA', 'EUROPE']`,
-			`{"atom": {"context_key": "region.name", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value": ["USA", "EUROPE"]}}`,
-			false,
+			`region.name IN ['USA', 'EUROPE']`, // dot expr context keys are not supported
+			``,
+			true,
 		},
 		{
 			`key pr and number < 63`,
