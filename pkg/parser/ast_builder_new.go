@@ -169,7 +169,14 @@ func (a *ASTBuilderV3) VisitPresentExp(ctx *PresentExpContext) interface{} {
 }
 
 func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{}) {
-	key := ctx.AttrPath().Accept(a).(string)
+	key := ctx.AttrPath().Accept(a)
+	if err, ok := key.(error); ok {
+		return err
+	}
+	ctxKey, ok := key.(string)
+	if !ok {
+		return fmt.Errorf("unknown type when visiting cmp expr: %v", key)
+	}
 	value := ctx.Value().Accept(a)
 
 	if err, ok := value.(error); ok {
@@ -181,7 +188,7 @@ func (a *ASTBuilderV3) VisitCompareExp(ctx *CompareExpContext) (ret interface{})
 	}
 
 	atom := &rules.Atom{
-		ContextKey:      key,
+		ContextKey:      ctxKey,
 		ComparisonValue: valueR,
 	}
 	// TODO: Do a type check on each righthanded operator.
@@ -255,7 +262,7 @@ func (a *ASTBuilderV3) VisitAttrPath(ctx *AttrPathContext) interface{} {
 	if ctx.SubAttr() == nil || ctx.SubAttr().IsEmpty() {
 		return ctx.ATTRNAME().GetText()
 	}
-	return ctx.ATTRNAME().GetText() + ctx.SubAttr().Accept(a).(string)
+	return fmt.Errorf("invalid attribute '%s': please remove period", ctx.ATTRNAME().GetText())
 }
 
 func (a *ASTBuilderV3) VisitSubAttr(ctx *SubAttrContext) interface{} {

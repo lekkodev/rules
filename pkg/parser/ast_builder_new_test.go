@@ -43,6 +43,11 @@ func TestASTParserV3(t *testing.T) {
 			false,
 		},
 		{
+			`region.name IN ['USA', 'EUROPE']`, // dot expr context keys are not supported
+			``,
+			true,
+		},
+		{
 			`key pr and number < 63`,
 			`{"logical_expression": {"rules": [{"atom": {"context_key": "key", "comparison_operator": "COMPARISON_OPERATOR_PRESENT"}}, {"atom": {"context_key": "number", "comparison_operator": "COMPARISON_OPERATOR_LESS_THAN", "comparison_value": 63}}], "logical_operator": "LOGICAL_OPERATOR_AND"}}`,
 			false,
