@@ -1,9 +1,14 @@
 grammar JsonQuery;
 
+// EOF for detecting and failing against extraneous input
 query
-   : NOT? SP? '(' query ')'                                                                         #parenExp
-   | query SP AND_OPERATOR SP query                                                                 #andLogicalExp
-   | query SP OR_OPERATOR SP query                                                                  #orLogicalExp
+   : subquery EOF
+   ;
+
+subquery
+   : NOT? SP? '(' subquery ')'                                                                      #parenExp
+   | subquery SP AND_OPERATOR SP subquery                                                           #andLogicalExp
+   | subquery SP OR_OPERATOR SP subquery                                                            #orLogicalExp
    | attrPath SP 'pr'                                                                               #presentExp
    | attrPath SP op=( EQ | NE | GT | LT | GE | LE | CO | SW | EW | IN ) SP value                    #compareExp
    | attrPath '(' (functionArg COMMA)* functionArg ')'                                              #callExp
@@ -69,15 +74,14 @@ value
    | VERSION           #version
    | STRING            #string
    | DOUBLE            #double
-   | '-'? INT EXP?     #long
-   | listInts          #listOfInts
-   | listDoubles       #listOfDoubles
+   | LONG              #long
+   | listNumbers       #listOfNumbers
    | listStrings       #listOfStrings
    | listBooleans      #listOfBooleans
    ;
 
 VERSION
-   : INT '.' INT '.' INT 
+   : INT '.' INT '.' INT
    ;
 
 STRING
@@ -109,21 +113,17 @@ DOUBLE
    : '-'? INT '.' [0-9] + EXP?
    ;
 
-listDoubles
-   : '[' subListOfDoubles
+LONG
+   : '-'? INT EXP?
    ;
 
-subListOfDoubles
-   : DOUBLE COMMA subListOfDoubles
-   | DOUBLE ']';
-
-listInts
-   : '[' subListOfInts
+listNumbers
+   : '[' subListOfNumbers
    ;
 
-subListOfInts
-   : INT COMMA subListOfInts
-   | INT ']';
+subListOfNumbers
+   : num=(LONG | DOUBLE) COMMA subListOfNumbers
+   | num=(LONG | DOUBLE) ']';
 
 listBooleans
    : '[' subListOfBooleans
@@ -134,7 +134,7 @@ subListOfBooleans
    | BOOLEAN ']';
 
 functionArg
-   : query
+   : subquery
    | attrPath
    | value
    ;

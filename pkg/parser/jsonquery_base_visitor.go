@@ -1,17 +1,3 @@
-// Copyright 2022 Lekko Technologies, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 // Code generated from JsonQuery.g4 by ANTLR 4.13.0. DO NOT EDIT.
 
 package parser // JsonQuery
@@ -20,6 +6,10 @@ import "github.com/antlr4-go/antlr/v4"
 
 type BaseJsonQueryVisitor struct {
 	*antlr.BaseParseTreeVisitor
+}
+
+func (v *BaseJsonQueryVisitor) VisitQuery(ctx *QueryContext) interface{} {
+	return v.VisitChildren(ctx)
 }
 
 func (v *BaseJsonQueryVisitor) VisitCompareExp(ctx *CompareExpContext) interface{} {
@@ -78,11 +68,7 @@ func (v *BaseJsonQueryVisitor) VisitLong(ctx *LongContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseJsonQueryVisitor) VisitListOfInts(ctx *ListOfIntsContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseJsonQueryVisitor) VisitListOfDoubles(ctx *ListOfDoublesContext) interface{} {
+func (v *BaseJsonQueryVisitor) VisitListOfNumbers(ctx *ListOfNumbersContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -102,19 +88,11 @@ func (v *BaseJsonQueryVisitor) VisitSubListOfStrings(ctx *SubListOfStringsContex
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseJsonQueryVisitor) VisitListDoubles(ctx *ListDoublesContext) interface{} {
+func (v *BaseJsonQueryVisitor) VisitListNumbers(ctx *ListNumbersContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseJsonQueryVisitor) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseJsonQueryVisitor) VisitListInts(ctx *ListIntsContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseJsonQueryVisitor) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
+func (v *BaseJsonQueryVisitor) VisitSubListOfNumbers(ctx *SubListOfNumbersContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -139,8 +139,20 @@ func TestASTParserV3(t *testing.T) {
 			"",
 			true,
 		},
+		{
+			// Mixed ints/floats
+			`key in [0.25, 0.5, 1, -4e2, 3.8e-3, 5e-3]`,
+			`{"atom":{"context_key":"key", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value":[0.25, 0.5, 1, -400, 0.0038, 0.005]}}`,
+			false,
+		},
+		{
+			// Fail on extraneous input
+			`x == 1xyz`,
+			"",
+			true,
+		},
 	}
-	for _, tt := range tests {
+	for _, tt := range tests[len(tests)-1:] {
 		result, err := BuildASTV3(tt.rule)
 		if tt.error {
 			require.Error(t, err, fmt.Sprintf("expected error didn't get one rule: %s", tt.rule))
