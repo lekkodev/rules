@@ -22,6 +22,9 @@ import "github.com/antlr4-go/antlr/v4"
 type JsonQueryVisitor interface {
 	antlr.ParseTreeVisitor
 
+	// Visit a parse tree produced by JsonQueryParser#query.
+	VisitQuery(ctx *QueryContext) interface{}
+
 	// Visit a parse tree produced by JsonQueryParser#compareExp.
 	VisitCompareExp(ctx *CompareExpContext) interface{}
 
@@ -64,11 +67,8 @@ type JsonQueryVisitor interface {
 	// Visit a parse tree produced by JsonQueryParser#long.
 	VisitLong(ctx *LongContext) interface{}
 
-	// Visit a parse tree produced by JsonQueryParser#listOfInts.
-	VisitListOfInts(ctx *ListOfIntsContext) interface{}
-
-	// Visit a parse tree produced by JsonQueryParser#listOfDoubles.
-	VisitListOfDoubles(ctx *ListOfDoublesContext) interface{}
+	// Visit a parse tree produced by JsonQueryParser#listOfNumbers.
+	VisitListOfNumbers(ctx *ListOfNumbersContext) interface{}
 
 	// Visit a parse tree produced by JsonQueryParser#listOfStrings.
 	VisitListOfStrings(ctx *ListOfStringsContext) interface{}
@@ -82,17 +82,11 @@ type JsonQueryVisitor interface {
 	// Visit a parse tree produced by JsonQueryParser#subListOfStrings.
 	VisitSubListOfStrings(ctx *SubListOfStringsContext) interface{}
 
-	// Visit a parse tree produced by JsonQueryParser#listDoubles.
-	VisitListDoubles(ctx *ListDoublesContext) interface{}
+	// Visit a parse tree produced by JsonQueryParser#listNumbers.
+	VisitListNumbers(ctx *ListNumbersContext) interface{}
 
-	// Visit a parse tree produced by JsonQueryParser#subListOfDoubles.
-	VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interface{}
-
-	// Visit a parse tree produced by JsonQueryParser#listInts.
-	VisitListInts(ctx *ListIntsContext) interface{}
-
-	// Visit a parse tree produced by JsonQueryParser#subListOfInts.
-	VisitSubListOfInts(ctx *SubListOfIntsContext) interface{}
+	// Visit a parse tree produced by JsonQueryParser#subListOfNumbers.
+	VisitSubListOfNumbers(ctx *SubListOfNumbersContext) interface{}
 
 	// Visit a parse tree produced by JsonQueryParser#listBooleans.
 	VisitListBooleans(ctx *ListBooleansContext) interface{}

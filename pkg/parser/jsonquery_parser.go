@@ -47,86 +47,78 @@ var JsonQueryParserStaticData struct {
 func jsonqueryParserInit() {
 	staticData := &JsonQueryParserStaticData
 	staticData.LiteralNames = []string{
-		"", "'('", "')'", "'pr'", "'.'", "'-'", "'['", "']'", "", "", "", "",
-		"'null'", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-		"", "'\\n'",
+		"", "'('", "')'", "'pr'", "'.'", "'['", "']'", "", "", "", "", "'null'",
+		"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+		"'\\n'",
 	}
 	staticData.SymbolicNames = []string{
-		"", "", "", "", "", "", "", "", "NOT", "AND_OPERATOR", "OR_OPERATOR",
-		"BOOLEAN", "NULL", "IN", "EQ", "NE", "GT", "LT", "GE", "LE", "CO", "SW",
-		"EW", "ATTRNAME", "VERSION", "STRING", "DOUBLE", "INT", "EXP", "NEWLINE",
+		"", "", "", "", "", "", "", "NOT", "AND_OPERATOR", "OR_OPERATOR", "BOOLEAN",
+		"NULL", "IN", "EQ", "NE", "GT", "LT", "GE", "LE", "CO", "SW", "EW",
+		"ATTRNAME", "VERSION", "STRING", "DOUBLE", "LONG", "INT", "EXP", "NEWLINE",
 		"COMMA", "SP",
 	}
 	staticData.RuleNames = []string{
-		"query", "attrPath", "subAttr", "value", "listStrings", "subListOfStrings",
-		"listDoubles", "subListOfDoubles", "listInts", "subListOfInts", "listBooleans",
+		"query", "subquery", "attrPath", "subAttr", "value", "listStrings",
+		"subListOfStrings", "listNumbers", "subListOfNumbers", "listBooleans",
 		"subListOfBooleans", "functionArg",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 31, 148, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 31, 132, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
-		10, 2, 11, 7, 11, 2, 12, 7, 12, 1, 0, 1, 0, 3, 0, 29, 8, 0, 1, 0, 3, 0,
-		32, 8, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-		0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 5, 0, 53, 8, 0, 10,
-		0, 12, 0, 56, 9, 0, 1, 0, 1, 0, 1, 0, 3, 0, 61, 8, 0, 1, 0, 1, 0, 1, 0,
-		1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 5, 0, 73, 8, 0, 10, 0, 12, 0,
-		76, 9, 0, 1, 1, 1, 1, 3, 1, 80, 8, 1, 1, 2, 1, 2, 1, 2, 1, 3, 1, 3, 1,
-		3, 1, 3, 1, 3, 1, 3, 3, 3, 91, 8, 3, 1, 3, 1, 3, 3, 3, 95, 8, 3, 1, 3,
-		1, 3, 1, 3, 1, 3, 3, 3, 101, 8, 3, 1, 4, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5,
-		1, 5, 1, 5, 3, 5, 111, 8, 5, 1, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 1, 7,
-		1, 7, 3, 7, 121, 8, 7, 1, 8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9,
-		3, 9, 131, 8, 9, 1, 10, 1, 10, 1, 10, 1, 11, 1, 11, 1, 11, 1, 11, 1, 11,
-		3, 11, 141, 8, 11, 1, 12, 1, 12, 1, 12, 3, 12, 146, 8, 12, 1, 12, 0, 1,
-		0, 13, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 0, 1, 1, 0, 13, 22,
-		160, 0, 60, 1, 0, 0, 0, 2, 77, 1, 0, 0, 0, 4, 81, 1, 0, 0, 0, 6, 100, 1,
-		0, 0, 0, 8, 102, 1, 0, 0, 0, 10, 110, 1, 0, 0, 0, 12, 112, 1, 0, 0, 0,
-		14, 120, 1, 0, 0, 0, 16, 122, 1, 0, 0, 0, 18, 130, 1, 0, 0, 0, 20, 132,
-		1, 0, 0, 0, 22, 140, 1, 0, 0, 0, 24, 145, 1, 0, 0, 0, 26, 28, 6, 0, -1,
-		0, 27, 29, 5, 8, 0, 0, 28, 27, 1, 0, 0, 0, 28, 29, 1, 0, 0, 0, 29, 31,
-		1, 0, 0, 0, 30, 32, 5, 31, 0, 0, 31, 30, 1, 0, 0, 0, 31, 32, 1, 0, 0, 0,
-		32, 33, 1, 0, 0, 0, 33, 34, 5, 1, 0, 0, 34, 35, 3, 0, 0, 0, 35, 36, 5,
-		2, 0, 0, 36, 61, 1, 0, 0, 0, 37, 38, 3, 2, 1, 0, 38, 39, 5, 31, 0, 0, 39,
-		40, 5, 3, 0, 0, 40, 61, 1, 0, 0, 0, 41, 42, 3, 2, 1, 0, 42, 43, 5, 31,
-		0, 0, 43, 44, 7, 0, 0, 0, 44, 45, 5, 31, 0, 0, 45, 46, 3, 6, 3, 0, 46,
-		61, 1, 0, 0, 0, 47, 48, 3, 2, 1, 0, 48, 54, 5, 1, 0, 0, 49, 50, 3, 24,
-		12, 0, 50, 51, 5, 30, 0, 0, 51, 53, 1, 0, 0, 0, 52, 49, 1, 0, 0, 0, 53,
-		56, 1, 0, 0, 0, 54, 52, 1, 0, 0, 0, 54, 55, 1, 0, 0, 0, 55, 57, 1, 0, 0,
-		0, 56, 54, 1, 0, 0, 0, 57, 58, 3, 24, 12, 0, 58, 59, 5, 2, 0, 0, 59, 61,
-		1, 0, 0, 0, 60, 26, 1, 0, 0, 0, 60, 37, 1, 0, 0, 0, 60, 41, 1, 0, 0, 0,
-		60, 47, 1, 0, 0, 0, 61, 74, 1, 0, 0, 0, 62, 63, 10, 5, 0, 0, 63, 64, 5,
-		31, 0, 0, 64, 65, 5, 9, 0, 0, 65, 66, 5, 31, 0, 0, 66, 73, 3, 0, 0, 6,
-		67, 68, 10, 4, 0, 0, 68, 69, 5, 31, 0, 0, 69, 70, 5, 10, 0, 0, 70, 71,
-		5, 31, 0, 0, 71, 73, 3, 0, 0, 5, 72, 62, 1, 0, 0, 0, 72, 67, 1, 0, 0, 0,
-		73, 76, 1, 0, 0, 0, 74, 72, 1, 0, 0, 0, 74, 75, 1, 0, 0, 0, 75, 1, 1, 0,
-		0, 0, 76, 74, 1, 0, 0, 0, 77, 79, 5, 23, 0, 0, 78, 80, 3, 4, 2, 0, 79,
-		78, 1, 0, 0, 0, 79, 80, 1, 0, 0, 0, 80, 3, 1, 0, 0, 0, 81, 82, 5, 4, 0,
-		0, 82, 83, 3, 2, 1, 0, 83, 5, 1, 0, 0, 0, 84, 101, 5, 11, 0, 0, 85, 101,
-		5, 12, 0, 0, 86, 101, 5, 24, 0, 0, 87, 101, 5, 25, 0, 0, 88, 101, 5, 26,
-		0, 0, 89, 91, 5, 5, 0, 0, 90, 89, 1, 0, 0, 0, 90, 91, 1, 0, 0, 0, 91, 92,
-		1, 0, 0, 0, 92, 94, 5, 27, 0, 0, 93, 95, 5, 28, 0, 0, 94, 93, 1, 0, 0,
-		0, 94, 95, 1, 0, 0, 0, 95, 101, 1, 0, 0, 0, 96, 101, 3, 16, 8, 0, 97, 101,
-		3, 12, 6, 0, 98, 101, 3, 8, 4, 0, 99, 101, 3, 20, 10, 0, 100, 84, 1, 0,
-		0, 0, 100, 85, 1, 0, 0, 0, 100, 86, 1, 0, 0, 0, 100, 87, 1, 0, 0, 0, 100,
-		88, 1, 0, 0, 0, 100, 90, 1, 0, 0, 0, 100, 96, 1, 0, 0, 0, 100, 97, 1, 0,
-		0, 0, 100, 98, 1, 0, 0, 0, 100, 99, 1, 0, 0, 0, 101, 7, 1, 0, 0, 0, 102,
-		103, 5, 6, 0, 0, 103, 104, 3, 10, 5, 0, 104, 9, 1, 0, 0, 0, 105, 106, 5,
-		25, 0, 0, 106, 107, 5, 30, 0, 0, 107, 111, 3, 10, 5, 0, 108, 109, 5, 25,
-		0, 0, 109, 111, 5, 7, 0, 0, 110, 105, 1, 0, 0, 0, 110, 108, 1, 0, 0, 0,
-		111, 11, 1, 0, 0, 0, 112, 113, 5, 6, 0, 0, 113, 114, 3, 14, 7, 0, 114,
-		13, 1, 0, 0, 0, 115, 116, 5, 26, 0, 0, 116, 117, 5, 30, 0, 0, 117, 121,
-		3, 14, 7, 0, 118, 119, 5, 26, 0, 0, 119, 121, 5, 7, 0, 0, 120, 115, 1,
-		0, 0, 0, 120, 118, 1, 0, 0, 0, 121, 15, 1, 0, 0, 0, 122, 123, 5, 6, 0,
-		0, 123, 124, 3, 18, 9, 0, 124, 17, 1, 0, 0, 0, 125, 126, 5, 27, 0, 0, 126,
-		127, 5, 30, 0, 0, 127, 131, 3, 18, 9, 0, 128, 129, 5, 27, 0, 0, 129, 131,
-		5, 7, 0, 0, 130, 125, 1, 0, 0, 0, 130, 128, 1, 0, 0, 0, 131, 19, 1, 0,
-		0, 0, 132, 133, 5, 6, 0, 0, 133, 134, 3, 22, 11, 0, 134, 21, 1, 0, 0, 0,
-		135, 136, 5, 11, 0, 0, 136, 137, 5, 30, 0, 0, 137, 141, 3, 22, 11, 0, 138,
-		139, 5, 11, 0, 0, 139, 141, 5, 7, 0, 0, 140, 135, 1, 0, 0, 0, 140, 138,
-		1, 0, 0, 0, 141, 23, 1, 0, 0, 0, 142, 146, 3, 0, 0, 0, 143, 146, 3, 2,
-		1, 0, 144, 146, 3, 6, 3, 0, 145, 142, 1, 0, 0, 0, 145, 143, 1, 0, 0, 0,
-		145, 144, 1, 0, 0, 0, 146, 25, 1, 0, 0, 0, 15, 28, 31, 54, 60, 72, 74,
-		79, 90, 94, 100, 110, 120, 130, 140, 145,
+		10, 2, 11, 7, 11, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 3, 1, 30, 8, 1, 1, 1, 3,
+		1, 33, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 54, 8, 1, 10,
+		1, 12, 1, 57, 9, 1, 1, 1, 1, 1, 1, 1, 3, 1, 62, 8, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 74, 8, 1, 10, 1, 12, 1,
+		77, 9, 1, 1, 2, 1, 2, 3, 2, 81, 8, 2, 1, 3, 1, 3, 1, 3, 1, 4, 1, 4, 1,
+		4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 3, 4, 95, 8, 4, 1, 5, 1, 5, 1, 5,
+		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 3, 6, 105, 8, 6, 1, 7, 1, 7, 1, 7, 1, 8,
+		1, 8, 1, 8, 1, 8, 1, 8, 3, 8, 115, 8, 8, 1, 9, 1, 9, 1, 9, 1, 10, 1, 10,
+		1, 10, 1, 10, 1, 10, 3, 10, 125, 8, 10, 1, 11, 1, 11, 1, 11, 3, 11, 130,
+		8, 11, 1, 11, 0, 1, 2, 12, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0,
+		2, 1, 0, 12, 21, 1, 0, 25, 26, 141, 0, 24, 1, 0, 0, 0, 2, 61, 1, 0, 0,
+		0, 4, 78, 1, 0, 0, 0, 6, 82, 1, 0, 0, 0, 8, 94, 1, 0, 0, 0, 10, 96, 1,
+		0, 0, 0, 12, 104, 1, 0, 0, 0, 14, 106, 1, 0, 0, 0, 16, 114, 1, 0, 0, 0,
+		18, 116, 1, 0, 0, 0, 20, 124, 1, 0, 0, 0, 22, 129, 1, 0, 0, 0, 24, 25,
+		3, 2, 1, 0, 25, 26, 5, 0, 0, 1, 26, 1, 1, 0, 0, 0, 27, 29, 6, 1, -1, 0,
+		28, 30, 5, 7, 0, 0, 29, 28, 1, 0, 0, 0, 29, 30, 1, 0, 0, 0, 30, 32, 1,
+		0, 0, 0, 31, 33, 5, 31, 0, 0, 32, 31, 1, 0, 0, 0, 32, 33, 1, 0, 0, 0, 33,
+		34, 1, 0, 0, 0, 34, 35, 5, 1, 0, 0, 35, 36, 3, 2, 1, 0, 36, 37, 5, 2, 0,
+		0, 37, 62, 1, 0, 0, 0, 38, 39, 3, 4, 2, 0, 39, 40, 5, 31, 0, 0, 40, 41,
+		5, 3, 0, 0, 41, 62, 1, 0, 0, 0, 42, 43, 3, 4, 2, 0, 43, 44, 5, 31, 0, 0,
+		44, 45, 7, 0, 0, 0, 45, 46, 5, 31, 0, 0, 46, 47, 3, 8, 4, 0, 47, 62, 1,
+		0, 0, 0, 48, 49, 3, 4, 2, 0, 49, 55, 5, 1, 0, 0, 50, 51, 3, 22, 11, 0,
+		51, 52, 5, 30, 0, 0, 52, 54, 1, 0, 0, 0, 53, 50, 1, 0, 0, 0, 54, 57, 1,
+		0, 0, 0, 55, 53, 1, 0, 0, 0, 55, 56, 1, 0, 0, 0, 56, 58, 1, 0, 0, 0, 57,
+		55, 1, 0, 0, 0, 58, 59, 3, 22, 11, 0, 59, 60, 5, 2, 0, 0, 60, 62, 1, 0,
+		0, 0, 61, 27, 1, 0, 0, 0, 61, 38, 1, 0, 0, 0, 61, 42, 1, 0, 0, 0, 61, 48,
+		1, 0, 0, 0, 62, 75, 1, 0, 0, 0, 63, 64, 10, 5, 0, 0, 64, 65, 5, 31, 0,
+		0, 65, 66, 5, 8, 0, 0, 66, 67, 5, 31, 0, 0, 67, 74, 3, 2, 1, 6, 68, 69,
+		10, 4, 0, 0, 69, 70, 5, 31, 0, 0, 70, 71, 5, 9, 0, 0, 71, 72, 5, 31, 0,
+		0, 72, 74, 3, 2, 1, 5, 73, 63, 1, 0, 0, 0, 73, 68, 1, 0, 0, 0, 74, 77,
+		1, 0, 0, 0, 75, 73, 1, 0, 0, 0, 75, 76, 1, 0, 0, 0, 76, 3, 1, 0, 0, 0,
+		77, 75, 1, 0, 0, 0, 78, 80, 5, 22, 0, 0, 79, 81, 3, 6, 3, 0, 80, 79, 1,
+		0, 0, 0, 80, 81, 1, 0, 0, 0, 81, 5, 1, 0, 0, 0, 82, 83, 5, 4, 0, 0, 83,
+		84, 3, 4, 2, 0, 84, 7, 1, 0, 0, 0, 85, 95, 5, 10, 0, 0, 86, 95, 5, 11,
+		0, 0, 87, 95, 5, 23, 0, 0, 88, 95, 5, 24, 0, 0, 89, 95, 5, 25, 0, 0, 90,
+		95, 5, 26, 0, 0, 91, 95, 3, 14, 7, 0, 92, 95, 3, 10, 5, 0, 93, 95, 3, 18,
+		9, 0, 94, 85, 1, 0, 0, 0, 94, 86, 1, 0, 0, 0, 94, 87, 1, 0, 0, 0, 94, 88,
+		1, 0, 0, 0, 94, 89, 1, 0, 0, 0, 94, 90, 1, 0, 0, 0, 94, 91, 1, 0, 0, 0,
+		94, 92, 1, 0, 0, 0, 94, 93, 1, 0, 0, 0, 95, 9, 1, 0, 0, 0, 96, 97, 5, 5,
+		0, 0, 97, 98, 3, 12, 6, 0, 98, 11, 1, 0, 0, 0, 99, 100, 5, 24, 0, 0, 100,
+		101, 5, 30, 0, 0, 101, 105, 3, 12, 6, 0, 102, 103, 5, 24, 0, 0, 103, 105,
+		5, 6, 0, 0, 104, 99, 1, 0, 0, 0, 104, 102, 1, 0, 0, 0, 105, 13, 1, 0, 0,
+		0, 106, 107, 5, 5, 0, 0, 107, 108, 3, 16, 8, 0, 108, 15, 1, 0, 0, 0, 109,
+		110, 7, 1, 0, 0, 110, 111, 5, 30, 0, 0, 111, 115, 3, 16, 8, 0, 112, 113,
+		7, 1, 0, 0, 113, 115, 5, 6, 0, 0, 114, 109, 1, 0, 0, 0, 114, 112, 1, 0,
+		0, 0, 115, 17, 1, 0, 0, 0, 116, 117, 5, 5, 0, 0, 117, 118, 3, 20, 10, 0,
+		118, 19, 1, 0, 0, 0, 119, 120, 5, 10, 0, 0, 120, 121, 5, 30, 0, 0, 121,
+		125, 3, 20, 10, 0, 122, 123, 5, 10, 0, 0, 123, 125, 5, 6, 0, 0, 124, 119,
+		1, 0, 0, 0, 124, 122, 1, 0, 0, 0, 125, 21, 1, 0, 0, 0, 126, 130, 3, 2,
+		1, 0, 127, 130, 3, 4, 2, 0, 128, 130, 3, 8, 4, 0, 129, 126, 1, 0, 0, 0,
+		129, 127, 1, 0, 0, 0, 129, 128, 1, 0, 0, 0, 130, 23, 1, 0, 0, 0, 12, 29,
+		32, 55, 61, 73, 75, 80, 94, 104, 114, 124, 129,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -171,26 +163,26 @@ const (
 	JsonQueryParserT__3         = 4
 	JsonQueryParserT__4         = 5
 	JsonQueryParserT__5         = 6
-	JsonQueryParserT__6         = 7
-	JsonQueryParserNOT          = 8
-	JsonQueryParserAND_OPERATOR = 9
-	JsonQueryParserOR_OPERATOR  = 10
-	JsonQueryParserBOOLEAN      = 11
-	JsonQueryParserNULL         = 12
-	JsonQueryParserIN           = 13
-	JsonQueryParserEQ           = 14
-	JsonQueryParserNE           = 15
-	JsonQueryParserGT           = 16
-	JsonQueryParserLT           = 17
-	JsonQueryParserGE           = 18
-	JsonQueryParserLE           = 19
-	JsonQueryParserCO           = 20
-	JsonQueryParserSW           = 21
-	JsonQueryParserEW           = 22
-	JsonQueryParserATTRNAME     = 23
-	JsonQueryParserVERSION      = 24
-	JsonQueryParserSTRING       = 25
-	JsonQueryParserDOUBLE       = 26
+	JsonQueryParserNOT          = 7
+	JsonQueryParserAND_OPERATOR = 8
+	JsonQueryParserOR_OPERATOR  = 9
+	JsonQueryParserBOOLEAN      = 10
+	JsonQueryParserNULL         = 11
+	JsonQueryParserIN           = 12
+	JsonQueryParserEQ           = 13
+	JsonQueryParserNE           = 14
+	JsonQueryParserGT           = 15
+	JsonQueryParserLT           = 16
+	JsonQueryParserGE           = 17
+	JsonQueryParserLE           = 18
+	JsonQueryParserCO           = 19
+	JsonQueryParserSW           = 20
+	JsonQueryParserEW           = 21
+	JsonQueryParserATTRNAME     = 22
+	JsonQueryParserVERSION      = 23
+	JsonQueryParserSTRING       = 24
+	JsonQueryParserDOUBLE       = 25
+	JsonQueryParserLONG         = 26
 	JsonQueryParserINT          = 27
 	JsonQueryParserEXP          = 28
 	JsonQueryParserNEWLINE      = 29
@@ -201,18 +193,17 @@ const (
 // JsonQueryParser rules.
 const (
 	JsonQueryParserRULE_query             = 0
-	JsonQueryParserRULE_attrPath          = 1
-	JsonQueryParserRULE_subAttr           = 2
-	JsonQueryParserRULE_value             = 3
-	JsonQueryParserRULE_listStrings       = 4
-	JsonQueryParserRULE_subListOfStrings  = 5
-	JsonQueryParserRULE_listDoubles       = 6
-	JsonQueryParserRULE_subListOfDoubles  = 7
-	JsonQueryParserRULE_listInts          = 8
-	JsonQueryParserRULE_subListOfInts     = 9
-	JsonQueryParserRULE_listBooleans      = 10
-	JsonQueryParserRULE_subListOfBooleans = 11
-	JsonQueryParserRULE_functionArg       = 12
+	JsonQueryParserRULE_subquery          = 1
+	JsonQueryParserRULE_attrPath          = 2
+	JsonQueryParserRULE_subAttr           = 3
+	JsonQueryParserRULE_value             = 4
+	JsonQueryParserRULE_listStrings       = 5
+	JsonQueryParserRULE_subListOfStrings  = 6
+	JsonQueryParserRULE_listNumbers       = 7
+	JsonQueryParserRULE_subListOfNumbers  = 8
+	JsonQueryParserRULE_listBooleans      = 9
+	JsonQueryParserRULE_subListOfBooleans = 10
+	JsonQueryParserRULE_functionArg       = 11
 )
 
 // IQueryContext is an interface to support dynamic dispatch.
@@ -221,6 +212,11 @@ type IQueryContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
+
+	// Getter signatures
+	Subquery() ISubqueryContext
+	EOF() antlr.TerminalNode
+
 	// IsQueryContext differentiates from other interfaces.
 	IsQueryContext()
 }
@@ -257,8 +253,24 @@ func NewQueryContext(parser antlr.Parser, parent antlr.ParserRuleContext, invoki
 
 func (s *QueryContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *QueryContext) CopyAll(ctx *QueryContext) {
-	s.CopyFrom(&ctx.BaseParserRuleContext)
+func (s *QueryContext) Subquery() ISubqueryContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISubqueryContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ISubqueryContext)
+}
+
+func (s *QueryContext) EOF() antlr.TerminalNode {
+	return s.GetToken(JsonQueryParserEOF, 0)
 }
 
 func (s *QueryContext) GetRuleContext() antlr.RuleContext {
@@ -269,17 +281,111 @@ func (s *QueryContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) 
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
+func (s *QueryContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case JsonQueryVisitor:
+		return t.VisitQuery(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *JsonQueryParser) Query() (localctx IQueryContext) {
+	localctx = NewQueryContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 0, JsonQueryParserRULE_query)
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(24)
+		p.subquery(0)
+	}
+	{
+		p.SetState(25)
+		p.Match(JsonQueryParserEOF)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.ExitRule()
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// ISubqueryContext is an interface to support dynamic dispatch.
+type ISubqueryContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+	// IsSubqueryContext differentiates from other interfaces.
+	IsSubqueryContext()
+}
+
+type SubqueryContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptySubqueryContext() *SubqueryContext {
+	var p = new(SubqueryContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = JsonQueryParserRULE_subquery
+	return p
+}
+
+func InitEmptySubqueryContext(p *SubqueryContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = JsonQueryParserRULE_subquery
+}
+
+func (*SubqueryContext) IsSubqueryContext() {}
+
+func NewSubqueryContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *SubqueryContext {
+	var p = new(SubqueryContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = JsonQueryParserRULE_subquery
+
+	return p
+}
+
+func (s *SubqueryContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *SubqueryContext) CopyAll(ctx *SubqueryContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
+}
+
+func (s *SubqueryContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *SubqueryContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
 type CompareExpContext struct {
-	QueryContext
+	SubqueryContext
 	op antlr.Token
 }
 
 func NewCompareExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *CompareExpContext {
 	var p = new(CompareExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -383,15 +489,15 @@ func (s *CompareExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 type AndLogicalExpContext struct {
-	QueryContext
+	SubqueryContext
 }
 
 func NewAndLogicalExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *AndLogicalExpContext {
 	var p = new(AndLogicalExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -400,20 +506,20 @@ func (s *AndLogicalExpContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *AndLogicalExpContext) AllQuery() []IQueryContext {
+func (s *AndLogicalExpContext) AllSubquery() []ISubqueryContext {
 	children := s.GetChildren()
 	len := 0
 	for _, ctx := range children {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			len++
 		}
 	}
 
-	tst := make([]IQueryContext, len)
+	tst := make([]ISubqueryContext, len)
 	i := 0
 	for _, ctx := range children {
-		if t, ok := ctx.(IQueryContext); ok {
-			tst[i] = t.(IQueryContext)
+		if t, ok := ctx.(ISubqueryContext); ok {
+			tst[i] = t.(ISubqueryContext)
 			i++
 		}
 	}
@@ -421,11 +527,11 @@ func (s *AndLogicalExpContext) AllQuery() []IQueryContext {
 	return tst
 }
 
-func (s *AndLogicalExpContext) Query(i int) IQueryContext {
+func (s *AndLogicalExpContext) Subquery(i int) ISubqueryContext {
 	var t antlr.RuleContext
 	j := 0
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			if j == i {
 				t = ctx.(antlr.RuleContext)
 				break
@@ -438,7 +544,7 @@ func (s *AndLogicalExpContext) Query(i int) IQueryContext {
 		return nil
 	}
 
-	return t.(IQueryContext)
+	return t.(ISubqueryContext)
 }
 
 func (s *AndLogicalExpContext) AllSP() []antlr.TerminalNode {
@@ -464,15 +570,15 @@ func (s *AndLogicalExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{
 }
 
 type ParenExpContext struct {
-	QueryContext
+	SubqueryContext
 }
 
 func NewParenExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ParenExpContext {
 	var p = new(ParenExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -481,10 +587,10 @@ func (s *ParenExpContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ParenExpContext) Query() IQueryContext {
+func (s *ParenExpContext) Subquery() ISubqueryContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -494,7 +600,7 @@ func (s *ParenExpContext) Query() IQueryContext {
 		return nil
 	}
 
-	return t.(IQueryContext)
+	return t.(ISubqueryContext)
 }
 
 func (s *ParenExpContext) NOT() antlr.TerminalNode {
@@ -516,15 +622,15 @@ func (s *ParenExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 type PresentExpContext struct {
-	QueryContext
+	SubqueryContext
 }
 
 func NewPresentExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *PresentExpContext {
 	var p = new(PresentExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -564,15 +670,15 @@ func (s *PresentExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 type CallExpContext struct {
-	QueryContext
+	SubqueryContext
 }
 
 func NewCallExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *CallExpContext {
 	var p = new(CallExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -657,15 +763,15 @@ func (s *CallExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 type OrLogicalExpContext struct {
-	QueryContext
+	SubqueryContext
 }
 
 func NewOrLogicalExpContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *OrLogicalExpContext {
 	var p = new(OrLogicalExpContext)
 
-	InitEmptyQueryContext(&p.QueryContext)
+	InitEmptySubqueryContext(&p.SubqueryContext)
 	p.parser = parser
-	p.CopyAll(ctx.(*QueryContext))
+	p.CopyAll(ctx.(*SubqueryContext))
 
 	return p
 }
@@ -674,20 +780,20 @@ func (s *OrLogicalExpContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *OrLogicalExpContext) AllQuery() []IQueryContext {
+func (s *OrLogicalExpContext) AllSubquery() []ISubqueryContext {
 	children := s.GetChildren()
 	len := 0
 	for _, ctx := range children {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			len++
 		}
 	}
 
-	tst := make([]IQueryContext, len)
+	tst := make([]ISubqueryContext, len)
 	i := 0
 	for _, ctx := range children {
-		if t, ok := ctx.(IQueryContext); ok {
-			tst[i] = t.(IQueryContext)
+		if t, ok := ctx.(ISubqueryContext); ok {
+			tst[i] = t.(ISubqueryContext)
 			i++
 		}
 	}
@@ -695,11 +801,11 @@ func (s *OrLogicalExpContext) AllQuery() []IQueryContext {
 	return tst
 }
 
-func (s *OrLogicalExpContext) Query(i int) IQueryContext {
+func (s *OrLogicalExpContext) Subquery(i int) ISubqueryContext {
 	var t antlr.RuleContext
 	j := 0
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			if j == i {
 				t = ctx.(antlr.RuleContext)
 				break
@@ -712,7 +818,7 @@ func (s *OrLogicalExpContext) Query(i int) IQueryContext {
 		return nil
 	}
 
-	return t.(IQueryContext)
+	return t.(ISubqueryContext)
 }
 
 func (s *OrLogicalExpContext) AllSP() []antlr.TerminalNode {
@@ -737,25 +843,25 @@ func (s *OrLogicalExpContext) Accept(visitor antlr.ParseTreeVisitor) interface{}
 	}
 }
 
-func (p *JsonQueryParser) Query() (localctx IQueryContext) {
-	return p.query(0)
+func (p *JsonQueryParser) Subquery() (localctx ISubqueryContext) {
+	return p.subquery(0)
 }
 
-func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
+func (p *JsonQueryParser) subquery(_p int) (localctx ISubqueryContext) {
 	var _parentctx antlr.ParserRuleContext = p.GetParserRuleContext()
 
 	_parentState := p.GetState()
-	localctx = NewQueryContext(p, p.GetParserRuleContext(), _parentState)
-	var _prevctx IQueryContext = localctx
+	localctx = NewSubqueryContext(p, p.GetParserRuleContext(), _parentState)
+	var _prevctx ISubqueryContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
-	_startState := 0
-	p.EnterRecursionRule(localctx, 0, JsonQueryParserRULE_query, _p)
+	_startState := 2
+	p.EnterRecursionRule(localctx, 2, JsonQueryParserRULE_subquery, _p)
 	var _la int
 
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(60)
+	p.SetState(61)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -767,7 +873,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 
-		p.SetState(28)
+		p.SetState(29)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -776,7 +882,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 
 		if _la == JsonQueryParserNOT {
 			{
-				p.SetState(27)
+				p.SetState(28)
 				p.Match(JsonQueryParserNOT)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -785,7 +891,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 
 		}
-		p.SetState(31)
+		p.SetState(32)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -794,7 +900,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 
 		if _la == JsonQueryParserSP {
 			{
-				p.SetState(30)
+				p.SetState(31)
 				p.Match(JsonQueryParserSP)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -804,7 +910,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 
 		}
 		{
-			p.SetState(33)
+			p.SetState(34)
 			p.Match(JsonQueryParserT__0)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -812,11 +918,11 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(34)
-			p.query(0)
+			p.SetState(35)
+			p.subquery(0)
 		}
 		{
-			p.SetState(35)
+			p.SetState(36)
 			p.Match(JsonQueryParserT__1)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -829,11 +935,11 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(37)
+			p.SetState(38)
 			p.AttrPath()
 		}
 		{
-			p.SetState(38)
+			p.SetState(39)
 			p.Match(JsonQueryParserSP)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -841,7 +947,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(39)
+			p.SetState(40)
 			p.Match(JsonQueryParserT__2)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -854,11 +960,11 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(41)
+			p.SetState(42)
 			p.AttrPath()
 		}
 		{
-			p.SetState(42)
+			p.SetState(43)
 			p.Match(JsonQueryParserSP)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -866,7 +972,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(43)
+			p.SetState(44)
 
 			var _lt = p.GetTokenStream().LT(1)
 
@@ -874,7 +980,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 
 			_la = p.GetTokenStream().LA(1)
 
-			if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&8380416) != 0) {
+			if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4190208) != 0) {
 				var _ri = p.GetErrorHandler().RecoverInline(p)
 
 				localctx.(*CompareExpContext).op = _ri
@@ -884,7 +990,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(44)
+			p.SetState(45)
 			p.Match(JsonQueryParserSP)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -892,7 +998,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(45)
+			p.SetState(46)
 			p.Value()
 		}
 
@@ -901,18 +1007,18 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(47)
+			p.SetState(48)
 			p.AttrPath()
 		}
 		{
-			p.SetState(48)
+			p.SetState(49)
 			p.Match(JsonQueryParserT__0)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(54)
+		p.SetState(55)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -924,11 +1030,11 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 			if _alt == 1 {
 				{
-					p.SetState(49)
+					p.SetState(50)
 					p.FunctionArg()
 				}
 				{
-					p.SetState(50)
+					p.SetState(51)
 					p.Match(JsonQueryParserCOMMA)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -937,7 +1043,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				}
 
 			}
-			p.SetState(56)
+			p.SetState(57)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -948,11 +1054,11 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 		}
 		{
-			p.SetState(57)
+			p.SetState(58)
 			p.FunctionArg()
 		}
 		{
-			p.SetState(58)
+			p.SetState(59)
 			p.Match(JsonQueryParserT__1)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -964,7 +1070,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(74)
+	p.SetState(75)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -979,7 +1085,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(72)
+			p.SetState(73)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -987,25 +1093,17 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 
 			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext()) {
 			case 1:
-				localctx = NewAndLogicalExpContext(p, NewQueryContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, JsonQueryParserRULE_query)
-				p.SetState(62)
+				localctx = NewAndLogicalExpContext(p, NewSubqueryContext(p, _parentctx, _parentState))
+				p.PushNewRecursionContext(localctx, _startState, JsonQueryParserRULE_subquery)
+				p.SetState(63)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(63)
-					p.Match(JsonQueryParserSP)
-					if p.HasError() {
-						// Recognition error - abort rule
-						goto errorExit
-					}
-				}
-				{
 					p.SetState(64)
-					p.Match(JsonQueryParserAND_OPERATOR)
+					p.Match(JsonQueryParserSP)
 					if p.HasError() {
 						// Recognition error - abort rule
 						goto errorExit
@@ -1013,7 +1111,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				}
 				{
 					p.SetState(65)
-					p.Match(JsonQueryParserSP)
+					p.Match(JsonQueryParserAND_OPERATOR)
 					if p.HasError() {
 						// Recognition error - abort rule
 						goto errorExit
@@ -1021,20 +1119,6 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				}
 				{
 					p.SetState(66)
-					p.query(6)
-				}
-
-			case 2:
-				localctx = NewOrLogicalExpContext(p, NewQueryContext(p, _parentctx, _parentState))
-				p.PushNewRecursionContext(localctx, _startState, JsonQueryParserRULE_query)
-				p.SetState(67)
-
-				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
-					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 4)", ""))
-					goto errorExit
-				}
-				{
-					p.SetState(68)
 					p.Match(JsonQueryParserSP)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -1042,8 +1126,22 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 					}
 				}
 				{
+					p.SetState(67)
+					p.subquery(6)
+				}
+
+			case 2:
+				localctx = NewOrLogicalExpContext(p, NewSubqueryContext(p, _parentctx, _parentState))
+				p.PushNewRecursionContext(localctx, _startState, JsonQueryParserRULE_subquery)
+				p.SetState(68)
+
+				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
+					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 4)", ""))
+					goto errorExit
+				}
+				{
 					p.SetState(69)
-					p.Match(JsonQueryParserOR_OPERATOR)
+					p.Match(JsonQueryParserSP)
 					if p.HasError() {
 						// Recognition error - abort rule
 						goto errorExit
@@ -1051,7 +1149,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				}
 				{
 					p.SetState(70)
-					p.Match(JsonQueryParserSP)
+					p.Match(JsonQueryParserOR_OPERATOR)
 					if p.HasError() {
 						// Recognition error - abort rule
 						goto errorExit
@@ -1059,7 +1157,15 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 				}
 				{
 					p.SetState(71)
-					p.query(5)
+					p.Match(JsonQueryParserSP)
+					if p.HasError() {
+						// Recognition error - abort rule
+						goto errorExit
+					}
+				}
+				{
+					p.SetState(72)
+					p.subquery(5)
 				}
 
 			case antlr.ATNInvalidAltNumber:
@@ -1067,7 +1173,7 @@ func (p *JsonQueryParser) query(_p int) (localctx IQueryContext) {
 			}
 
 		}
-		p.SetState(76)
+		p.SetState(77)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1178,19 +1284,19 @@ func (s *AttrPathContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *JsonQueryParser) AttrPath() (localctx IAttrPathContext) {
 	localctx = NewAttrPathContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 2, JsonQueryParserRULE_attrPath)
+	p.EnterRule(localctx, 4, JsonQueryParserRULE_attrPath)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(77)
+		p.SetState(78)
 		p.Match(JsonQueryParserATTRNAME)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(79)
+	p.SetState(80)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1199,7 +1305,7 @@ func (p *JsonQueryParser) AttrPath() (localctx IAttrPathContext) {
 
 	if _la == JsonQueryParserT__3 {
 		{
-			p.SetState(78)
+			p.SetState(79)
 			p.SubAttr()
 		}
 
@@ -1300,10 +1406,10 @@ func (s *SubAttrContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *JsonQueryParser) SubAttr() (localctx ISubAttrContext) {
 	localctx = NewSubAttrContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 4, JsonQueryParserRULE_subAttr)
+	p.EnterRule(localctx, 6, JsonQueryParserRULE_subAttr)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(81)
+		p.SetState(82)
 		p.Match(JsonQueryParserT__3)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1311,7 +1417,7 @@ func (p *JsonQueryParser) SubAttr() (localctx ISubAttrContext) {
 		}
 	}
 	{
-		p.SetState(82)
+		p.SetState(83)
 		p.AttrPath()
 	}
 
@@ -1380,50 +1486,6 @@ func (s *ValueContext) GetRuleContext() antlr.RuleContext {
 
 func (s *ValueContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-type ListOfDoublesContext struct {
-	ValueContext
-}
-
-func NewListOfDoublesContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ListOfDoublesContext {
-	var p = new(ListOfDoublesContext)
-
-	InitEmptyValueContext(&p.ValueContext)
-	p.parser = parser
-	p.CopyAll(ctx.(*ValueContext))
-
-	return p
-}
-
-func (s *ListOfDoublesContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *ListOfDoublesContext) ListDoubles() IListDoublesContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IListDoublesContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IListDoublesContext)
-}
-
-func (s *ListOfDoublesContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case JsonQueryVisitor:
-		return t.VisitListOfDoubles(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
 }
 
 type ListOfStringsContext struct {
@@ -1674,6 +1736,50 @@ func (s *VersionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	}
 }
 
+type ListOfNumbersContext struct {
+	ValueContext
+}
+
+func NewListOfNumbersContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ListOfNumbersContext {
+	var p = new(ListOfNumbersContext)
+
+	InitEmptyValueContext(&p.ValueContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*ValueContext))
+
+	return p
+}
+
+func (s *ListOfNumbersContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ListOfNumbersContext) ListNumbers() IListNumbersContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IListNumbersContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IListNumbersContext)
+}
+
+func (s *ListOfNumbersContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case JsonQueryVisitor:
+		return t.VisitListOfNumbers(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
 type LongContext struct {
 	ValueContext
 }
@@ -1692,12 +1798,8 @@ func (s *LongContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *LongContext) INT() antlr.TerminalNode {
-	return s.GetToken(JsonQueryParserINT, 0)
-}
-
-func (s *LongContext) EXP() antlr.TerminalNode {
-	return s.GetToken(JsonQueryParserEXP, 0)
+func (s *LongContext) LONG() antlr.TerminalNode {
+	return s.GetToken(JsonQueryParserLONG, 0)
 }
 
 func (s *LongContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
@@ -1710,67 +1812,21 @@ func (s *LongContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	}
 }
 
-type ListOfIntsContext struct {
-	ValueContext
-}
-
-func NewListOfIntsContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ListOfIntsContext {
-	var p = new(ListOfIntsContext)
-
-	InitEmptyValueContext(&p.ValueContext)
-	p.parser = parser
-	p.CopyAll(ctx.(*ValueContext))
-
-	return p
-}
-
-func (s *ListOfIntsContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *ListOfIntsContext) ListInts() IListIntsContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IListIntsContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IListIntsContext)
-}
-
-func (s *ListOfIntsContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case JsonQueryVisitor:
-		return t.VisitListOfInts(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
 func (p *JsonQueryParser) Value() (localctx IValueContext) {
 	localctx = NewValueContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 6, JsonQueryParserRULE_value)
-	var _la int
-
-	p.SetState(100)
+	p.EnterRule(localctx, 8, JsonQueryParserRULE_value)
+	p.SetState(94)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 9, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 7, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewBooleanContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(84)
+			p.SetState(85)
 			p.Match(JsonQueryParserBOOLEAN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1782,7 +1838,7 @@ func (p *JsonQueryParser) Value() (localctx IValueContext) {
 		localctx = NewNullContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(85)
+			p.SetState(86)
 			p.Match(JsonQueryParserNULL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1794,7 +1850,7 @@ func (p *JsonQueryParser) Value() (localctx IValueContext) {
 		localctx = NewVersionContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(86)
+			p.SetState(87)
 			p.Match(JsonQueryParserVERSION)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1806,7 +1862,7 @@ func (p *JsonQueryParser) Value() (localctx IValueContext) {
 		localctx = NewStringContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(87)
+			p.SetState(88)
 			p.Match(JsonQueryParserSTRING)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1818,7 +1874,7 @@ func (p *JsonQueryParser) Value() (localctx IValueContext) {
 		localctx = NewDoubleContext(p, localctx)
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(88)
+			p.SetState(89)
 			p.Match(JsonQueryParserDOUBLE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1829,78 +1885,36 @@ func (p *JsonQueryParser) Value() (localctx IValueContext) {
 	case 6:
 		localctx = NewLongContext(p, localctx)
 		p.EnterOuterAlt(localctx, 6)
-		p.SetState(90)
-		p.GetErrorHandler().Sync(p)
-		if p.HasError() {
-			goto errorExit
-		}
-		_la = p.GetTokenStream().LA(1)
-
-		if _la == JsonQueryParserT__4 {
-			{
-				p.SetState(89)
-				p.Match(JsonQueryParserT__4)
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
-			}
-
-		}
 		{
-			p.SetState(92)
-			p.Match(JsonQueryParserINT)
+			p.SetState(90)
+			p.Match(JsonQueryParserLONG)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(94)
-		p.GetErrorHandler().Sync(p)
-
-		if p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 8, p.GetParserRuleContext()) == 1 {
-			{
-				p.SetState(93)
-				p.Match(JsonQueryParserEXP)
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
-			}
-
-		} else if p.HasError() { // JIM
-			goto errorExit
-		}
 
 	case 7:
-		localctx = NewListOfIntsContext(p, localctx)
+		localctx = NewListOfNumbersContext(p, localctx)
 		p.EnterOuterAlt(localctx, 7)
 		{
-			p.SetState(96)
-			p.ListInts()
+			p.SetState(91)
+			p.ListNumbers()
 		}
 
 	case 8:
-		localctx = NewListOfDoublesContext(p, localctx)
+		localctx = NewListOfStringsContext(p, localctx)
 		p.EnterOuterAlt(localctx, 8)
 		{
-			p.SetState(97)
-			p.ListDoubles()
-		}
-
-	case 9:
-		localctx = NewListOfStringsContext(p, localctx)
-		p.EnterOuterAlt(localctx, 9)
-		{
-			p.SetState(98)
+			p.SetState(92)
 			p.ListStrings()
 		}
 
-	case 10:
+	case 9:
 		localctx = NewListOfBooleansContext(p, localctx)
-		p.EnterOuterAlt(localctx, 10)
+		p.EnterOuterAlt(localctx, 9)
 		{
-			p.SetState(99)
+			p.SetState(93)
 			p.ListBooleans()
 		}
 
@@ -2003,18 +2017,18 @@ func (s *ListStringsContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *JsonQueryParser) ListStrings() (localctx IListStringsContext) {
 	localctx = NewListStringsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 8, JsonQueryParserRULE_listStrings)
+	p.EnterRule(localctx, 10, JsonQueryParserRULE_listStrings)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(102)
-		p.Match(JsonQueryParserT__5)
+		p.SetState(96)
+		p.Match(JsonQueryParserT__4)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
 	{
-		p.SetState(103)
+		p.SetState(97)
 		p.SubListOfStrings()
 	}
 
@@ -2123,18 +2137,18 @@ func (s *SubListOfStringsContext) Accept(visitor antlr.ParseTreeVisitor) interfa
 
 func (p *JsonQueryParser) SubListOfStrings() (localctx ISubListOfStringsContext) {
 	localctx = NewSubListOfStringsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, JsonQueryParserRULE_subListOfStrings)
-	p.SetState(110)
+	p.EnterRule(localctx, 12, JsonQueryParserRULE_subListOfStrings)
+	p.SetState(104)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 10, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 8, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(105)
+			p.SetState(99)
 			p.Match(JsonQueryParserSTRING)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2142,7 +2156,7 @@ func (p *JsonQueryParser) SubListOfStrings() (localctx ISubListOfStringsContext)
 			}
 		}
 		{
-			p.SetState(106)
+			p.SetState(100)
 			p.Match(JsonQueryParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2150,14 +2164,14 @@ func (p *JsonQueryParser) SubListOfStrings() (localctx ISubListOfStringsContext)
 			}
 		}
 		{
-			p.SetState(107)
+			p.SetState(101)
 			p.SubListOfStrings()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(108)
+			p.SetState(102)
 			p.Match(JsonQueryParserSTRING)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2165,8 +2179,8 @@ func (p *JsonQueryParser) SubListOfStrings() (localctx ISubListOfStringsContext)
 			}
 		}
 		{
-			p.SetState(109)
-			p.Match(JsonQueryParserT__6)
+			p.SetState(103)
+			p.Match(JsonQueryParserT__5)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
@@ -2190,56 +2204,56 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IListDoublesContext is an interface to support dynamic dispatch.
-type IListDoublesContext interface {
+// IListNumbersContext is an interface to support dynamic dispatch.
+type IListNumbersContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
 	// Getter signatures
-	SubListOfDoubles() ISubListOfDoublesContext
+	SubListOfNumbers() ISubListOfNumbersContext
 
-	// IsListDoublesContext differentiates from other interfaces.
-	IsListDoublesContext()
+	// IsListNumbersContext differentiates from other interfaces.
+	IsListNumbersContext()
 }
 
-type ListDoublesContext struct {
+type ListNumbersContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyListDoublesContext() *ListDoublesContext {
-	var p = new(ListDoublesContext)
+func NewEmptyListNumbersContext() *ListNumbersContext {
+	var p = new(ListNumbersContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_listDoubles
+	p.RuleIndex = JsonQueryParserRULE_listNumbers
 	return p
 }
 
-func InitEmptyListDoublesContext(p *ListDoublesContext) {
+func InitEmptyListNumbersContext(p *ListNumbersContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_listDoubles
+	p.RuleIndex = JsonQueryParserRULE_listNumbers
 }
 
-func (*ListDoublesContext) IsListDoublesContext() {}
+func (*ListNumbersContext) IsListNumbersContext() {}
 
-func NewListDoublesContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ListDoublesContext {
-	var p = new(ListDoublesContext)
+func NewListNumbersContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ListNumbersContext {
+	var p = new(ListNumbersContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = JsonQueryParserRULE_listDoubles
+	p.RuleIndex = JsonQueryParserRULE_listNumbers
 
 	return p
 }
 
-func (s *ListDoublesContext) GetParser() antlr.Parser { return s.parser }
+func (s *ListNumbersContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ListDoublesContext) SubListOfDoubles() ISubListOfDoublesContext {
+func (s *ListNumbersContext) SubListOfNumbers() ISubListOfNumbersContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISubListOfDoublesContext); ok {
+		if _, ok := ctx.(ISubListOfNumbersContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -2249,42 +2263,42 @@ func (s *ListDoublesContext) SubListOfDoubles() ISubListOfDoublesContext {
 		return nil
 	}
 
-	return t.(ISubListOfDoublesContext)
+	return t.(ISubListOfNumbersContext)
 }
 
-func (s *ListDoublesContext) GetRuleContext() antlr.RuleContext {
+func (s *ListNumbersContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ListDoublesContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *ListNumbersContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ListDoublesContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *ListNumbersContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case JsonQueryVisitor:
-		return t.VisitListDoubles(s)
+		return t.VisitListNumbers(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *JsonQueryParser) ListDoubles() (localctx IListDoublesContext) {
-	localctx = NewListDoublesContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 12, JsonQueryParserRULE_listDoubles)
+func (p *JsonQueryParser) ListNumbers() (localctx IListNumbersContext) {
+	localctx = NewListNumbersContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 14, JsonQueryParserRULE_listNumbers)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(112)
-		p.Match(JsonQueryParserT__5)
+		p.SetState(106)
+		p.Match(JsonQueryParserT__4)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
 	{
-		p.SetState(113)
-		p.SubListOfDoubles()
+		p.SetState(107)
+		p.SubListOfNumbers()
 	}
 
 errorExit:
@@ -2300,118 +2314,146 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// ISubListOfDoublesContext is an interface to support dynamic dispatch.
-type ISubListOfDoublesContext interface {
+// ISubListOfNumbersContext is an interface to support dynamic dispatch.
+type ISubListOfNumbersContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// Getter signatures
-	DOUBLE() antlr.TerminalNode
-	COMMA() antlr.TerminalNode
-	SubListOfDoubles() ISubListOfDoublesContext
+	// GetNum returns the num token.
+	GetNum() antlr.Token
 
-	// IsSubListOfDoublesContext differentiates from other interfaces.
-	IsSubListOfDoublesContext()
+	// SetNum sets the num token.
+	SetNum(antlr.Token)
+
+	// Getter signatures
+	COMMA() antlr.TerminalNode
+	SubListOfNumbers() ISubListOfNumbersContext
+	LONG() antlr.TerminalNode
+	DOUBLE() antlr.TerminalNode
+
+	// IsSubListOfNumbersContext differentiates from other interfaces.
+	IsSubListOfNumbersContext()
 }
 
-type SubListOfDoublesContext struct {
+type SubListOfNumbersContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
+	num    antlr.Token
 }
 
-func NewEmptySubListOfDoublesContext() *SubListOfDoublesContext {
-	var p = new(SubListOfDoublesContext)
+func NewEmptySubListOfNumbersContext() *SubListOfNumbersContext {
+	var p = new(SubListOfNumbersContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_subListOfDoubles
+	p.RuleIndex = JsonQueryParserRULE_subListOfNumbers
 	return p
 }
 
-func InitEmptySubListOfDoublesContext(p *SubListOfDoublesContext) {
+func InitEmptySubListOfNumbersContext(p *SubListOfNumbersContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_subListOfDoubles
+	p.RuleIndex = JsonQueryParserRULE_subListOfNumbers
 }
 
-func (*SubListOfDoublesContext) IsSubListOfDoublesContext() {}
+func (*SubListOfNumbersContext) IsSubListOfNumbersContext() {}
 
-func NewSubListOfDoublesContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *SubListOfDoublesContext {
-	var p = new(SubListOfDoublesContext)
+func NewSubListOfNumbersContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *SubListOfNumbersContext {
+	var p = new(SubListOfNumbersContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = JsonQueryParserRULE_subListOfDoubles
+	p.RuleIndex = JsonQueryParserRULE_subListOfNumbers
 
 	return p
 }
 
-func (s *SubListOfDoublesContext) GetParser() antlr.Parser { return s.parser }
+func (s *SubListOfNumbersContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *SubListOfDoublesContext) DOUBLE() antlr.TerminalNode {
+func (s *SubListOfNumbersContext) GetNum() antlr.Token { return s.num }
+
+func (s *SubListOfNumbersContext) SetNum(v antlr.Token) { s.num = v }
+
+func (s *SubListOfNumbersContext) COMMA() antlr.TerminalNode {
+	return s.GetToken(JsonQueryParserCOMMA, 0)
+}
+
+func (s *SubListOfNumbersContext) SubListOfNumbers() ISubListOfNumbersContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISubListOfNumbersContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ISubListOfNumbersContext)
+}
+
+func (s *SubListOfNumbersContext) LONG() antlr.TerminalNode {
+	return s.GetToken(JsonQueryParserLONG, 0)
+}
+
+func (s *SubListOfNumbersContext) DOUBLE() antlr.TerminalNode {
 	return s.GetToken(JsonQueryParserDOUBLE, 0)
 }
 
-func (s *SubListOfDoublesContext) COMMA() antlr.TerminalNode {
-	return s.GetToken(JsonQueryParserCOMMA, 0)
-}
-
-func (s *SubListOfDoublesContext) SubListOfDoubles() ISubListOfDoublesContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISubListOfDoublesContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ISubListOfDoublesContext)
-}
-
-func (s *SubListOfDoublesContext) GetRuleContext() antlr.RuleContext {
+func (s *SubListOfNumbersContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *SubListOfDoublesContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *SubListOfNumbersContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *SubListOfDoublesContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *SubListOfNumbersContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case JsonQueryVisitor:
-		return t.VisitSubListOfDoubles(s)
+		return t.VisitSubListOfNumbers(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *JsonQueryParser) SubListOfDoubles() (localctx ISubListOfDoublesContext) {
-	localctx = NewSubListOfDoublesContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 14, JsonQueryParserRULE_subListOfDoubles)
-	p.SetState(120)
+func (p *JsonQueryParser) SubListOfNumbers() (localctx ISubListOfNumbersContext) {
+	localctx = NewSubListOfNumbersContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 16, JsonQueryParserRULE_subListOfNumbers)
+	var _la int
+
+	p.SetState(114)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 11, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 9, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(115)
-			p.Match(JsonQueryParserDOUBLE)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
+			p.SetState(109)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*SubListOfNumbersContext).num = _lt
+
+			_la = p.GetTokenStream().LA(1)
+
+			if !(_la == JsonQueryParserDOUBLE || _la == JsonQueryParserLONG) {
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*SubListOfNumbersContext).num = _ri
+			} else {
+				p.GetErrorHandler().ReportMatch(p)
+				p.Consume()
 			}
 		}
 		{
-			p.SetState(116)
+			p.SetState(110)
 			p.Match(JsonQueryParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2419,292 +2461,33 @@ func (p *JsonQueryParser) SubListOfDoubles() (localctx ISubListOfDoublesContext)
 			}
 		}
 		{
-			p.SetState(117)
-			p.SubListOfDoubles()
+			p.SetState(111)
+			p.SubListOfNumbers()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(118)
-			p.Match(JsonQueryParserDOUBLE)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
+			p.SetState(112)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*SubListOfNumbersContext).num = _lt
+
+			_la = p.GetTokenStream().LA(1)
+
+			if !(_la == JsonQueryParserDOUBLE || _la == JsonQueryParserLONG) {
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*SubListOfNumbersContext).num = _ri
+			} else {
+				p.GetErrorHandler().ReportMatch(p)
+				p.Consume()
 			}
 		}
 		{
-			p.SetState(119)
-			p.Match(JsonQueryParserT__6)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-
-	case antlr.ATNInvalidAltNumber:
-		goto errorExit
-	}
-
-errorExit:
-	if p.HasError() {
-		v := p.GetError()
-		localctx.SetException(v)
-		p.GetErrorHandler().ReportError(p, v)
-		p.GetErrorHandler().Recover(p, v)
-		p.SetError(nil)
-	}
-	p.ExitRule()
-	return localctx
-	goto errorExit // Trick to prevent compiler error if the label is not used
-}
-
-// IListIntsContext is an interface to support dynamic dispatch.
-type IListIntsContext interface {
-	antlr.ParserRuleContext
-
-	// GetParser returns the parser.
-	GetParser() antlr.Parser
-
-	// Getter signatures
-	SubListOfInts() ISubListOfIntsContext
-
-	// IsListIntsContext differentiates from other interfaces.
-	IsListIntsContext()
-}
-
-type ListIntsContext struct {
-	antlr.BaseParserRuleContext
-	parser antlr.Parser
-}
-
-func NewEmptyListIntsContext() *ListIntsContext {
-	var p = new(ListIntsContext)
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_listInts
-	return p
-}
-
-func InitEmptyListIntsContext(p *ListIntsContext) {
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_listInts
-}
-
-func (*ListIntsContext) IsListIntsContext() {}
-
-func NewListIntsContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ListIntsContext {
-	var p = new(ListIntsContext)
-
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
-
-	p.parser = parser
-	p.RuleIndex = JsonQueryParserRULE_listInts
-
-	return p
-}
-
-func (s *ListIntsContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *ListIntsContext) SubListOfInts() ISubListOfIntsContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISubListOfIntsContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ISubListOfIntsContext)
-}
-
-func (s *ListIntsContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *ListIntsContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-func (s *ListIntsContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case JsonQueryVisitor:
-		return t.VisitListInts(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-func (p *JsonQueryParser) ListInts() (localctx IListIntsContext) {
-	localctx = NewListIntsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, JsonQueryParserRULE_listInts)
-	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(122)
-		p.Match(JsonQueryParserT__5)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
-		}
-	}
-	{
-		p.SetState(123)
-		p.SubListOfInts()
-	}
-
-errorExit:
-	if p.HasError() {
-		v := p.GetError()
-		localctx.SetException(v)
-		p.GetErrorHandler().ReportError(p, v)
-		p.GetErrorHandler().Recover(p, v)
-		p.SetError(nil)
-	}
-	p.ExitRule()
-	return localctx
-	goto errorExit // Trick to prevent compiler error if the label is not used
-}
-
-// ISubListOfIntsContext is an interface to support dynamic dispatch.
-type ISubListOfIntsContext interface {
-	antlr.ParserRuleContext
-
-	// GetParser returns the parser.
-	GetParser() antlr.Parser
-
-	// Getter signatures
-	INT() antlr.TerminalNode
-	COMMA() antlr.TerminalNode
-	SubListOfInts() ISubListOfIntsContext
-
-	// IsSubListOfIntsContext differentiates from other interfaces.
-	IsSubListOfIntsContext()
-}
-
-type SubListOfIntsContext struct {
-	antlr.BaseParserRuleContext
-	parser antlr.Parser
-}
-
-func NewEmptySubListOfIntsContext() *SubListOfIntsContext {
-	var p = new(SubListOfIntsContext)
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_subListOfInts
-	return p
-}
-
-func InitEmptySubListOfIntsContext(p *SubListOfIntsContext) {
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = JsonQueryParserRULE_subListOfInts
-}
-
-func (*SubListOfIntsContext) IsSubListOfIntsContext() {}
-
-func NewSubListOfIntsContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *SubListOfIntsContext {
-	var p = new(SubListOfIntsContext)
-
-	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
-
-	p.parser = parser
-	p.RuleIndex = JsonQueryParserRULE_subListOfInts
-
-	return p
-}
-
-func (s *SubListOfIntsContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *SubListOfIntsContext) INT() antlr.TerminalNode {
-	return s.GetToken(JsonQueryParserINT, 0)
-}
-
-func (s *SubListOfIntsContext) COMMA() antlr.TerminalNode {
-	return s.GetToken(JsonQueryParserCOMMA, 0)
-}
-
-func (s *SubListOfIntsContext) SubListOfInts() ISubListOfIntsContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISubListOfIntsContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ISubListOfIntsContext)
-}
-
-func (s *SubListOfIntsContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *SubListOfIntsContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-func (s *SubListOfIntsContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case JsonQueryVisitor:
-		return t.VisitSubListOfInts(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-func (p *JsonQueryParser) SubListOfInts() (localctx ISubListOfIntsContext) {
-	localctx = NewSubListOfIntsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, JsonQueryParserRULE_subListOfInts)
-	p.SetState(130)
-	p.GetErrorHandler().Sync(p)
-	if p.HasError() {
-		goto errorExit
-	}
-
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 12, p.GetParserRuleContext()) {
-	case 1:
-		p.EnterOuterAlt(localctx, 1)
-		{
-			p.SetState(125)
-			p.Match(JsonQueryParserINT)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-		{
-			p.SetState(126)
-			p.Match(JsonQueryParserCOMMA)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-		{
-			p.SetState(127)
-			p.SubListOfInts()
-		}
-
-	case 2:
-		p.EnterOuterAlt(localctx, 2)
-		{
-			p.SetState(128)
-			p.Match(JsonQueryParserINT)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-		{
-			p.SetState(129)
-			p.Match(JsonQueryParserT__6)
+			p.SetState(113)
+			p.Match(JsonQueryParserT__5)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
@@ -2810,18 +2593,18 @@ func (s *ListBooleansContext) Accept(visitor antlr.ParseTreeVisitor) interface{}
 
 func (p *JsonQueryParser) ListBooleans() (localctx IListBooleansContext) {
 	localctx = NewListBooleansContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 20, JsonQueryParserRULE_listBooleans)
+	p.EnterRule(localctx, 18, JsonQueryParserRULE_listBooleans)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(132)
-		p.Match(JsonQueryParserT__5)
+		p.SetState(116)
+		p.Match(JsonQueryParserT__4)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
 	{
-		p.SetState(133)
+		p.SetState(117)
 		p.SubListOfBooleans()
 	}
 
@@ -2930,18 +2713,18 @@ func (s *SubListOfBooleansContext) Accept(visitor antlr.ParseTreeVisitor) interf
 
 func (p *JsonQueryParser) SubListOfBooleans() (localctx ISubListOfBooleansContext) {
 	localctx = NewSubListOfBooleansContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 22, JsonQueryParserRULE_subListOfBooleans)
-	p.SetState(140)
+	p.EnterRule(localctx, 20, JsonQueryParserRULE_subListOfBooleans)
+	p.SetState(124)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 13, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 10, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(135)
+			p.SetState(119)
 			p.Match(JsonQueryParserBOOLEAN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2949,7 +2732,7 @@ func (p *JsonQueryParser) SubListOfBooleans() (localctx ISubListOfBooleansContex
 			}
 		}
 		{
-			p.SetState(136)
+			p.SetState(120)
 			p.Match(JsonQueryParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2957,14 +2740,14 @@ func (p *JsonQueryParser) SubListOfBooleans() (localctx ISubListOfBooleansContex
 			}
 		}
 		{
-			p.SetState(137)
+			p.SetState(121)
 			p.SubListOfBooleans()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(138)
+			p.SetState(122)
 			p.Match(JsonQueryParserBOOLEAN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2972,8 +2755,8 @@ func (p *JsonQueryParser) SubListOfBooleans() (localctx ISubListOfBooleansContex
 			}
 		}
 		{
-			p.SetState(139)
-			p.Match(JsonQueryParserT__6)
+			p.SetState(123)
+			p.Match(JsonQueryParserT__5)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
@@ -3005,7 +2788,7 @@ type IFunctionArgContext interface {
 	GetParser() antlr.Parser
 
 	// Getter signatures
-	Query() IQueryContext
+	Subquery() ISubqueryContext
 	AttrPath() IAttrPathContext
 	Value() IValueContext
 
@@ -3045,10 +2828,10 @@ func NewFunctionArgContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *FunctionArgContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *FunctionArgContext) Query() IQueryContext {
+func (s *FunctionArgContext) Subquery() ISubqueryContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IQueryContext); ok {
+		if _, ok := ctx.(ISubqueryContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -3058,7 +2841,7 @@ func (s *FunctionArgContext) Query() IQueryContext {
 		return nil
 	}
 
-	return t.(IQueryContext)
+	return t.(ISubqueryContext)
 }
 
 func (s *FunctionArgContext) AttrPath() IAttrPathContext {
@@ -3113,32 +2896,32 @@ func (s *FunctionArgContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *JsonQueryParser) FunctionArg() (localctx IFunctionArgContext) {
 	localctx = NewFunctionArgContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 24, JsonQueryParserRULE_functionArg)
-	p.SetState(145)
+	p.EnterRule(localctx, 22, JsonQueryParserRULE_functionArg)
+	p.SetState(129)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 14, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 11, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(142)
-			p.query(0)
+			p.SetState(126)
+			p.subquery(0)
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(143)
+			p.SetState(127)
 			p.AttrPath()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(144)
+			p.SetState(128)
 			p.Value()
 		}
 
@@ -3161,19 +2944,19 @@ errorExit:
 
 func (p *JsonQueryParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
-	case 0:
-		var t *QueryContext = nil
+	case 1:
+		var t *SubqueryContext = nil
 		if localctx != nil {
-			t = localctx.(*QueryContext)
+			t = localctx.(*SubqueryContext)
 		}
-		return p.Query_Sempred(t, predIndex)
+		return p.Subquery_Sempred(t, predIndex)
 
 	default:
 		panic("No predicate with index: " + fmt.Sprint(ruleIndex))
 	}
 }
 
-func (p *JsonQueryParser) Query_Sempred(localctx antlr.RuleContext, predIndex int) bool {
+func (p *JsonQueryParser) Subquery_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 0:
 		return p.Precpred(p.GetParserRuleContext(), 5)

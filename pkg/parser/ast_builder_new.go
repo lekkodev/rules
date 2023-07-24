@@ -50,7 +50,15 @@ func BuildASTV3(rule string) (*rules.Rule, error) {
 }
 
 func (a *ASTBuilderV3) Visit(tree antlr.ParseTree) interface{} {
-	switch val := tree.(type) {
+	val, ok := tree.(*QueryContext)
+	if !ok {
+		return fmt.Errorf("invalid tree type: %v", val)
+	}
+	return val.Accept(a)
+}
+
+func (a *ASTBuilderV3) VisitQuery(ctx *QueryContext) interface{} {
+	switch val := ctx.Subquery().(type) {
 	case *AndLogicalExpContext:
 		return val.Accept(a)
 	case *OrLogicalExpContext:
@@ -64,12 +72,12 @@ func (a *ASTBuilderV3) Visit(tree antlr.ParseTree) interface{} {
 	case *CallExpContext:
 		return val.Accept(a)
 	default:
-		return fmt.Errorf("invalid tree type: %v", val)
+		return fmt.Errorf("invalid subquery type: %v", val)
 	}
 }
 
 func (a *ASTBuilderV3) VisitParenExp(ctx *ParenExpContext) interface{} {
-	v := ctx.Query().Accept(a)
+	v := ctx.Subquery().Accept(a)
 	if err, ok := v.(error); ok {
 		return err
 	}
@@ -84,7 +92,7 @@ func (a *ASTBuilderV3) VisitParenExp(ctx *ParenExpContext) interface{} {
 }
 
 func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{} {
-	left := ctx.Query(0).Accept(a)
+	left := ctx.Subquery(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
 	}
@@ -93,7 +101,7 @@ func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{}
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
 
-	right := ctx.Query(1).Accept(a)
+	right := ctx.Subquery(1).Accept(a)
 	if err, ok := right.(error); ok {
 		return err
 	}
@@ -121,7 +129,7 @@ func (a *ASTBuilderV3) VisitAndLogicalExp(ctx *AndLogicalExpContext) interface{}
 }
 
 func (a *ASTBuilderV3) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
-	left := ctx.Query(0).Accept(a)
+	left := ctx.Subquery(0).Accept(a)
 	if err, ok := left.(error); ok {
 		return err
 	}
@@ -130,7 +138,7 @@ func (a *ASTBuilderV3) VisitOrLogicalExp(ctx *OrLogicalExpContext) interface{} {
 		return fmt.Errorf("invalid type during AST building: %v", left)
 	}
 
-	right := ctx.Query(1).Accept(a)
+	right := ctx.Subquery(1).Accept(a)
 	if err, ok := right.(error); ok {
 		return err
 	}
@@ -299,60 +307,39 @@ func (a *ASTBuilderV3) VisitVersion(ctx *VersionContext) interface{} {
 }
 
 func (a *ASTBuilderV3) VisitLong(ctx *LongContext) interface{} {
-	val, err := strconv.ParseInt(ctx.GetText(), 10, 64)
+	val, err := strconv.ParseFloat(ctx.GetText(), 64)
 	if err != nil {
 		return err
 	}
-	return structpb.NewNumberValue(float64(val))
+	return structpb.NewNumberValue(val)
 }
 
-func (a *ASTBuilderV3) VisitListOfInts(ctx *ListOfIntsContext) interface{} {
-	return ctx.ListInts().Accept(a)
+func (a *ASTBuilderV3) VisitListOfNumbers(ctx *ListOfNumbersContext) interface{} {
+	return ctx.ListNumbers().Accept(a)
 }
 
-func (a *ASTBuilderV3) VisitListInts(ctx *ListIntsContext) interface{} {
-	return ctx.SubListOfInts().Accept(a)
+func (a *ASTBuilderV3) VisitListNumbers(ctx *ListNumbersContext) interface{} {
+	return ctx.SubListOfNumbers().Accept(a)
 }
 
-func (a *ASTBuilderV3) VisitSubListOfInts(ctx *SubListOfIntsContext) interface{} {
-	val, err := strconv.ParseInt(ctx.INT().GetText(), 10, 64)
-	if err != nil {
-		return err
-	}
-	if ctx.SubListOfInts() == nil || ctx.SubListOfInts().IsEmpty() {
-		res, err := structpb.NewList([]interface{}{float64(val)})
+func (a *ASTBuilderV3) VisitSubListOfNumbers(ctx *SubListOfNumbersContext) interface{} {
+	var val float64
+	var err error
+	switch ctx.num.GetTokenType() {
+	case JsonQueryParserLONG:
+		val, err = strconv.ParseFloat(ctx.LONG().GetText(), 64)
 		if err != nil {
 			return err
 		}
-		return structpb.NewListValue(res)
+	case JsonQueryParserDOUBLE:
+		val, err = strconv.ParseFloat(ctx.DOUBLE().GetText(), 64)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("invalid token: %v", ctx.num.GetTokenType())
 	}
-
-	rest := ctx.SubListOfInts().Accept(a)
-	if err, ok := rest.(error); ok {
-		return err
-	}
-	restL, ok := rest.(*structpb.Value)
-	if !ok {
-		return fmt.Errorf("unknown type when parsing list of strings: %v", rest)
-	}
-	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewNumberValue(float64(val))}, restL.GetListValue().Values...)
-	return restL
-}
-
-func (a *ASTBuilderV3) VisitListOfDoubles(ctx *ListOfDoublesContext) interface{} {
-	return ctx.ListDoubles().Accept(a)
-}
-
-func (a *ASTBuilderV3) VisitListDoubles(ctx *ListDoublesContext) interface{} {
-	return ctx.SubListOfDoubles().Accept(a)
-}
-
-func (a *ASTBuilderV3) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) interface{} {
-	val, err := strconv.ParseFloat(ctx.DOUBLE().GetText(), 64)
-	if err != nil {
-		return err
-	}
-	if ctx.SubListOfDoubles() == nil || ctx.SubListOfDoubles().IsEmpty() {
+	if ctx.SubListOfNumbers() == nil || ctx.SubListOfNumbers().IsEmpty() {
 		res, err := structpb.NewList([]interface{}{val})
 		if err != nil {
 			return err
@@ -360,13 +347,13 @@ func (a *ASTBuilderV3) VisitSubListOfDoubles(ctx *SubListOfDoublesContext) inter
 		return structpb.NewListValue(res)
 	}
 
-	rest := ctx.SubListOfDoubles().Accept(a)
+	rest := ctx.SubListOfNumbers().Accept(a)
 	if err, ok := rest.(error); ok {
 		return err
 	}
 	restL, ok := rest.(*structpb.Value)
 	if !ok {
-		return fmt.Errorf("unknown type when parsing list of doubles: %v", rest)
+		return fmt.Errorf("unknown type when parsing list of numbers: %v", rest)
 	}
 	restL.GetListValue().Values = append([]*structpb.Value{structpb.NewNumberValue(val)}, restL.GetListValue().Values...)
 	return restL
@@ -436,8 +423,8 @@ func (a *ASTBuilderV3) VisitSubListOfBooleans(ctx *SubListOfBooleansContext) int
 }
 
 func (a *ASTBuilderV3) VisitFunctionArg(ctx *FunctionArgContext) interface{} {
-	if ctx.Query() != nil {
-		return ctx.Query().Accept(a)
+	if ctx.Subquery() != nil {
+		return ctx.Subquery().Accept(a)
 	}
 	if ctx.AttrPath() != nil {
 		return ctx.AttrPath().Accept(a)

@@ -40,13 +40,14 @@ func TestRoundTrip(t *testing.T) {
 		"v == 1 or (w == 2 and x == 3)",
 		"bucket(a, 10)",
 		"bucket(a, 7.75)",
+		"x in [1,2.5,3.14,-10]",
 	}
 	for _, tc := range cases {
 		ast, err := BuildASTV3(tc)
 		require.NoError(t, err, "failed to build ast %s", tc)
 		str, err := RuleToString(ast)
 		require.NoError(t, err, "failed to go from ast to string %s %v", tc, ast)
-		require.Equal(t, str, tc, "strings don't match, test case: %s, round trip: %s, ast: %v", tc, str, ast)
+		require.Equal(t, tc, str, "strings don't match, test case: %s, round trip: %s, ast: %v", tc, str, ast)
 	}
 }
 
@@ -66,6 +67,6 @@ func TestFMT(t *testing.T) {
 		require.NoError(t, err, "failed to build ast %s", tc[0])
 		str, err := RuleToString(ast)
 		require.NoError(t, err, "failed to go from ast to string %s %v", tc[0], ast)
-		require.Equal(t, str, tc[1], "strings don't match, test case: %s, round trip: %s, ast: %v", tc[1], str, ast)
+		require.Equal(t, tc[1], str, "strings don't match, test case: %s, round trip: %s, ast: %v", tc[1], str, ast)
 	}
 }
