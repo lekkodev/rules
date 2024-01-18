@@ -70,3 +70,11 @@ func TestFMT(t *testing.T) {
 		require.Equal(t, tc[1], str, "strings don't match, test case: %s, round trip: %s, ast: %v", tc[1], str, ast)
 	}
 }
+
+func TestNoHTMLEscape(t *testing.T) {
+	ast, err := BuildASTV3("foo == \"<bar>\"")
+	require.NoError(t, err)
+	str, err := RuleToString(ast)
+	require.NoError(t, err)
+	require.Equal(t, "foo == \"<bar>\"", str)
+}

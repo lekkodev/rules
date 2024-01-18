@@ -15,12 +15,21 @@
 package parser
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strconv"
 
 	rules "buf.build/gen/go/lekkodev/cli/protocolbuffers/go/lekko/rules/v1beta3"
 )
+
+func JSONMarshal(t interface{}) ([]byte, error) {
+    buffer := &bytes.Buffer{}
+    encoder := json.NewEncoder(buffer)
+    encoder.SetEscapeHTML(false)
+    err := encoder.Encode(t)
+    return bytes.TrimRight(buffer.Bytes(), "\n"), err
+}
 
 func RuleToString(rule *rules.Rule) (string, error) {
 	switch v := rule.GetRule().(type) {
@@ -32,7 +41,7 @@ func RuleToString(rule *rules.Rule) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		b, err := json.Marshal(rule.GetAtom().ComparisonValue)
+		b, err := JSONMarshal(rule.GetAtom().ComparisonValue)
 		if err != nil {
 			return "", err
 		}
