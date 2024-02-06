@@ -6,7 +6,7 @@ require (
 	buf.build/gen/go/lekkodev/cli/protocolbuffers/go v1.32.0-20240206020255-9524ca471ba2.1
 	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.4
 	google.golang.org/protobuf v1.32.0
 )
 
