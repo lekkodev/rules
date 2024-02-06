@@ -145,6 +145,12 @@ func TestASTParserV3(t *testing.T) {
 			false,
 		},
 		{
+			// Non string type
+			`evaluate_to("segments", 3)`,
+			`{"call_expression": {"evaluate_to": {"config_name": "segments", "config_value": "preview"}}}`,
+			true,
+		},
+		{
 			// Not enough args
 			`evaluate_to("segments")`,
 			"",

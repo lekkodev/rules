@@ -64,7 +64,7 @@ func (a *ASTBuilderV3) visitEvaluateTo(ctx *CallExpContext) interface{} {
 				Function: &rulesv1beta3.CallExpression_EvaluateTo_{
 					EvaluateTo: &rulesv1beta3.CallExpression_EvaluateTo{
 						ConfigName:  configNameVal.GetStringValue(),
-						ConfigValue: configValueVal.GetStringValue(),
+						ConfigValue: configValueVal,
 					},
 				},
 			},
