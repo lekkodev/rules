@@ -100,11 +100,15 @@ func RuleToString(rule *rules.Rule) (string, error) {
 			}
 			return fmt.Sprintf("bucket(%s, %v)", f.Bucket.GetContextKey(), threshold), nil
 		case *rules.CallExpression_EvaluateTo_:
+			a, err := JSONMarshal(rule.GetCallExpression().GetEvaluateTo().ConfigName)
+			if err != nil {
+				return "", err
+			}
 			b, err := JSONMarshal(rule.GetCallExpression().GetEvaluateTo().ConfigValue)
 			if err != nil {
 				return "", err
 			}
-			return fmt.Sprintf("evaluate_to(\"%s\", \"%s\")", f.EvaluateTo.ConfigName, string(b)), nil
+			return fmt.Sprintf("evaluate_to(%s, %s)", string(a), string(b)), nil
 		default:
 			return "", fmt.Errorf("unknown function type %T of rule %v", f, rule)
 		}
