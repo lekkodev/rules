@@ -29,7 +29,47 @@ const outOfRangeErrorMsg = "value for arg %s for function %s out of range: %v"
 
 var functionVisitors = map[string]func(*ASTBuilderV3, *CallExpContext) interface{}{
 	// Add new function name -> visitor functions here, implementing them below
-	"bucket": (*ASTBuilderV3).visitBucket,
+	"bucket":      (*ASTBuilderV3).visitBucket,
+	"evaluate_to": (*ASTBuilderV3).visitEvaluateTo,
+}
+
+func (a *ASTBuilderV3) visitEvaluateTo(ctx *CallExpContext) interface{} {
+
+	funcArgs := ctx.AllFunctionArg()
+
+	if len(funcArgs) != 2 {
+		return fmt.Errorf(incorrectNumArgsErrorMsg, "evaluate_to", len(funcArgs), 2)
+	}
+
+	configName := funcArgs[0].Accept(a)
+	if err, ok := configName.(error); ok {
+		return err
+	}
+	configNameVal, _ := configName.(*structpb.Value)
+	if _, ok := configNameVal.GetKind().(*structpb.Value_StringValue); !ok {
+		return fmt.Errorf(invalidTypeErrorMsg, "config_name", "evaluate_to", configName)
+	}
+	configValue := funcArgs[1].Accept(a)
+	if err, ok := configValue.(error); ok {
+		return err
+	}
+	configValueVal, _ := configValue.(*structpb.Value)
+	// TODO: To accommodate arbitrary config dependencies, the config_value should extend beyond being solely of string type
+	if _, ok := configValueVal.GetKind().(*structpb.Value_StringValue); !ok {
+		return fmt.Errorf(invalidTypeErrorMsg, "config_value", "evaluate_to", configValue)
+	}
+	return &rulesv1beta3.Rule{
+		Rule: &rulesv1beta3.Rule_CallExpression{
+			CallExpression: &rulesv1beta3.CallExpression{
+				Function: &rulesv1beta3.CallExpression_EvaluateTo_{
+					EvaluateTo: &rulesv1beta3.CallExpression_EvaluateTo{
+						ConfigName:  configNameVal.GetStringValue(),
+						ConfigValue: configValueVal,
+					},
+				},
+			},
+		},
+	}
 }
 
 func (a *ASTBuilderV3) visitBucket(ctx *CallExpContext) interface{} {

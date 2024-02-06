@@ -140,6 +140,29 @@ func TestASTParserV3(t *testing.T) {
 			true,
 		},
 		{
+			`evaluate_to("segments", "preview")`,
+			`{"call_expression": {"evaluate_to": {"config_name": "segments", "config_value": "preview"}}}`,
+			false,
+		},
+		{
+			// Non string type
+			`evaluate_to("segments", 3)`,
+			`{"call_expression": {"evaluate_to": {"config_name": "segments", "config_value": "preview"}}}`,
+			true,
+		},
+		{
+			// Not enough args
+			`evaluate_to("segments")`,
+			"",
+			true,
+		},
+		{
+			// Too many args
+			`evaluate_to("segments", "preview", "extra")`,
+			"",
+			true,
+		},
+		{
 			// Mixed ints/floats
 			`key in [0.25, 0.5, 1, -4e2, 3.8e-3, 5e-3]`,
 			`{"atom":{"context_key":"key", "comparison_operator": "COMPARISON_OPERATOR_CONTAINED_WITHIN", "comparison_value":[0.25, 0.5, 1, -400, 0.0038, 0.005]}}`,

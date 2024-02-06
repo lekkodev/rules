@@ -40,6 +40,7 @@ func TestRoundTrip(t *testing.T) {
 		"v == 1 or (w == 2 and x == 3)",
 		"bucket(a, 10)",
 		"bucket(a, 7.75)",
+		"evaluate_to(\"segments\", \"segment_name\")",
 		"x in [1,2.5,3.14,-10]",
 	}
 	for _, tc := range cases {
